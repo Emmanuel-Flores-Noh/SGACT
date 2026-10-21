@@ -1,0 +1,62 @@
+---
+config:
+  theme: neo
+---
+erDiagram
+    USUARIOS {
+        int id PK
+        string matricula
+        string correo
+        string nombres
+        string apellido_paterno
+        string apellido_materno
+        string password
+        string rol
+    }
+
+    PROCEDIMIENTOS {
+        int id PK
+        string nombre
+        string descripcion
+        float costo
+        int vigencia_meses
+    }
+
+    PETICIONES_TRAMITE {
+        int id PK
+        int alumno_id FK
+        int procedimiento_id FK
+        string estado
+        string fecha_solicitud
+    }
+
+    PAGOS {
+        int id PK
+        int peticion_id FK
+        string metodo_pago
+        float monto
+        string estado_pago
+        string fecha
+    }
+
+    FIRMAS_REVISORES {
+        int id PK
+        int revisor_id FK
+        string tipo_firma
+        string ruta_archivo
+        boolean preconfigurada
+    }
+
+    HISTORIAL_ESTADOS {
+        int id PK
+        int peticion_id FK
+        string estado_anterior
+        string estado_nuevo
+        string fecha
+    }
+
+    USUARIOS ||--o{ PETICIONES_TRAMITE : realiza
+    PROCEDIMIENTOS ||--o{ PETICIONES_TRAMITE : genera
+    PETICIONES_TRAMITE ||--|| PAGOS : tiene
+    USUARIOS ||--o{ FIRMAS_REVISORES : posee
+    PETICIONES_TRAMITE ||--o{ HISTORIAL_ESTADOS : registra
