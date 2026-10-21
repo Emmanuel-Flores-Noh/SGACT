@@ -45,7 +45,7 @@ Para cumplir con los lineamientos del curso, la arquitectura relacional se compo
 
 | Tabla | Campos Principales | Propósito |
 | :--- | :--- | :--- |
-| **usuarios** | `id`, `matricula`, `correo`, `nombre_completo`, `rol`, `password` | Almacena credenciales y datos de alumnos y revisores. |
+| **usuarios** | `matricula`, `correo`, `nombre_completo`, `rol`, `password` | Almacena credenciales y datos de alumnos y revisores. |
 | **procedimientos** | `id`, `nombre`, `descripcion`, `costo`, `duracion_validez_meses` | Catálogo de trámites disponibles (ej. Constancia de estudios). |
 | **peticiones_tramite** | `id`, `alumno_id`, `procedimiento_id`, `estado`, `fecha_solicitud` | Registra cada solicitud individual realizada por los alumnos. |
 | **pagos** | `id`, `peticion_id`, `metodo_pago`, `monto`, `estado_pago`, `fecha` | Controla el registro y estatus de las transacciones financieras. |
