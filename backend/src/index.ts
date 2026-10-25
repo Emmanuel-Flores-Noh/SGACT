@@ -4,12 +4,16 @@ import usuarioRoutes from './routes/usuario.routes';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import loginRoutes from './routes/login.routes';
+import procedimientoRoutes from './routes/procedimiento.routes';
 
 const app = express();
 const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.urlencoded({ extended: true }))
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 // @ts-ignore
 app.use(cookieParser(process.env.COOKIE_SECRET))
@@ -26,6 +30,7 @@ app.use(session({
 
 app.use('/api/usuario', usuarioRoutes)
 app.use('/api/login', loginRoutes)
+app.use('/api/procedimientos', procedimientoRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

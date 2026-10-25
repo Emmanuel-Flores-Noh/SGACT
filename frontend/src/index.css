@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-azul-institucional: #01457C;
+  --color-azul-texto: #00437C;
+  --color-azul-institucional-enfoque: #013763;
+  --color-dorado-encabezado: #C99213;
+
+  --tinta: #1f2933;
+  --gris-700: #3d4550;
+  --gris-500: #636b75;
+  --gris-300: #8a929c;
+  --gris-200: #d9dde2;
+  --gris-100: #eef0f3;
+  --gris-050: #f7f8fa;
+  --color-blanco: #ffffff;
+
+  --font-sgact: "Open Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  --radio-sm: 8px;
+  --radio: 12px;
+  --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.06), 0 1px 3px rgb(0 0 0 / 0.08);
+  --sombra-md: 0 4px 12px rgb(0 0 0 / 0.10);
+  --sombra-lg: 0 12px 32px rgb(0 0 0 / 0.18);
+}
+
+body {
+  font-family: var(--font-sgact);
+  color: var(--tinta);
+  background-color: var(--gris-050);
+}
+
+::selection {
+  background-color: var(--color-azul-institucional);
+  color: var(--color-blanco);
+}
