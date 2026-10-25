@@ -5,6 +5,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import loginRoutes from './routes/login.routes';
 import procedimientoRoutes from './routes/procedimiento.routes';
+import peticionesTramite from './routes/peticionesTramite.routes';
+import historialPeticiones from './routes/historial.routes';
 
 const app = express();
 const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -31,6 +33,8 @@ app.use(session({
 app.use('/api/usuario', usuarioRoutes)
 app.use('/api/login', loginRoutes)
 app.use('/api/procedimientos', procedimientoRoutes)
+app.use('/api/peticiones',  peticionesTramite)
+app.use('/api/historial', historialPeticiones)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
