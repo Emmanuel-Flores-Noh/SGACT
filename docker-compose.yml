@@ -29,6 +29,7 @@ services:
       DB_NAME: app_db
       COOKIE_SECRET: app_cookie_secret
       SESSION_SECRET: app_session_secret
+      FRONTEND_URL: http://localhost:5173 
     ports:
       - "3000:3000"
     depends_on:
@@ -40,6 +41,8 @@ services:
       dockerfile: Dockerfile
     container_name: sgact_frontend
     restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:3000
     ports:
       - "5173:5173"
     depends_on:

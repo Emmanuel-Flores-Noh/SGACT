@@ -1,8 +1,9 @@
 import { Router, Request, Response } from 'express'
-import { obtenerUsuario } from '../controllers/usuario.controller';
+import { obtenerOtroUsuario, obtenerUsuario } from '../controllers/usuario.controller';
 
 const usuarioRoutes = Router();
 
 usuarioRoutes.get('/', obtenerUsuario)
+usuarioRoutes.post('/', obtenerOtroUsuario)
 
 export default usuarioRoutes;

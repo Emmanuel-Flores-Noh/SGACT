@@ -19,6 +19,23 @@
 
   --font-sgact: "Open Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 
+  /* Tokens de estado (medidos para contraste AA >= 4.5:1 sobre fondo claro) */
+  --ok-600: #1b6d32;
+  --ok-200: #a3e0b2;
+  --ok-050: #edf8f0;
+
+  --err-600: #a91b1b;
+  --err-200: #f5b3b3;
+  --err-050: #fdf2f2;
+
+  --warn-600: #8a5300;
+  --warn-200: #f7d594;
+  --warn-050: #fef8ec;
+
+  --azul-600: #0a5fa8;
+  --azul-200: #b5d5f5;
+  --azul-050: #edf5fc;
+
   --radio-sm: 8px;
   --radio: 12px;
   --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.06), 0 1px 3px rgb(0 0 0 / 0.08);
