@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 CREATE TABLE IF NOT EXISTS procedimientos (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(30),
+    nombre VARCHAR(50),
     descripcion VARCHAR(200),
     costo FLOAT,
     vigencia_meses INT
