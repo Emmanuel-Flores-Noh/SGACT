@@ -5,6 +5,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import loginRoutes from './routes/login.routes';
 import procedimientoRoutes from './routes/procedimiento.routes';
+import peticionesTramite from './routes/peticionesTramite.routes';
+import historialPeticiones from './routes/historial.routes';
 import verificarAuth from './middlewares/verificarAuth';
 
 const app = express();
@@ -33,6 +35,8 @@ app.use('/api/usuario', verificarAuth)
 app.use('/api/usuario', usuarioRoutes)
 app.use('/api/auth', loginRoutes)
 app.use('/api/procedimientos', procedimientoRoutes)
+app.use('/api/peticiones',  peticionesTramite)
+app.use('/api/historial', historialPeticiones)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
