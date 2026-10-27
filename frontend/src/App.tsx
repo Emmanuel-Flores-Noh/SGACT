@@ -11,7 +11,11 @@ export default function App(): React.JSX.Element {
       <Route path="/" element={<Login />}></Route>
       <Route path="/dashboard" element={<Dashboard />}>
         <Route path="alumno">
-          <Route path={"catalogo"} element={<Catalogo />}/>
+          <Route path="catalogo" element={<Catalogo />}/>
+          <Route path="historial" />
+        </Route>
+        <Route path="revisor">
+          <Route path="bandeja" />
           <Route path="historial" />
         </Route>
       </Route>
