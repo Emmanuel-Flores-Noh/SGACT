@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Usuario, getUserData, logout } from '../api/usuario';
 // @ts-ignore
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate, Outlet, useLocation } from 'react-router-dom'
 import { Button, LoadingScreen } from '../components';
 
 interface userNavOptions {
@@ -36,6 +36,7 @@ export default function Dashboard(): React.JSX.Element {
   const [userData, setUserData] = useState<Usuario>();
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   
   const handleLogout = async () => {
     if( await logout() ) {
@@ -50,16 +51,16 @@ export default function Dashboard(): React.JSX.Element {
         return;
       }
 
-      res.json().then( (value:Usuario) => {setUserData(value);} );
-      
-      setLoading(false);
+      res.json().then( (value:Usuario) => {
+        setUserData(value);
+        setLoading(false);
 
-      if(userData?.rol === 'Revisor') {
-        navigate('/dashboard/revisor/')
-      }
-      else {
-        navigate('/dashboard/alumno/catalogo')
-      }
+        const esRaizDelDashboard = location.pathname === '/dashboard' || location.pathname === '/dashboard/';
+
+        if( esRaizDelDashboard ) {
+          navigate(value.rol === 'Revisor' ? '/dashboard/revisor/' : '/dashboard/alumno/catalogo');
+        }
+      });
     })
   }, [])
   

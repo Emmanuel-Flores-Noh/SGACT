@@ -23,7 +23,7 @@ export default function Login(): React.JSX.Element {
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState("");
   
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const successful = await login(email, password);
