@@ -22,8 +22,8 @@ const navOptions: {Alumno: Array<userNavOptions>, Revisor: Array<userNavOptions>
   ],
   "Revisor": [
     {
-      url: "/dashboard/revisor/pendientes",
-      name: "Pendientes"
+      url: "/dashboard/revisor/bandeja",
+      name: "Bandeja"
     },
     {
       url: "/dashboard/revisor/historial",
@@ -50,16 +50,18 @@ export default function Dashboard(): React.JSX.Element {
         return;
       }
 
-      res.json().then( (value:Usuario) => {setUserData(value);} );
-      
-      setLoading(false);
-
-      if(userData?.rol === 'Revisor') {
-        navigate('/dashboard/revisor/')
-      }
-      else {
-        navigate('/dashboard/alumno/catalogo')
-      }
+      res.json().then( (value:Usuario) => {
+        setUserData(value);
+        setLoading(false);
+        
+        console.log(value);
+        if(value.rol === 'Revisor') {
+          navigate('/dashboard/revisor/bandeja')
+        }
+        else {
+          navigate('/dashboard/alumno/catalogo')
+        }
+      });
     })
   }, [])
   

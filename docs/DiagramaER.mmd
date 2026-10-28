@@ -3,6 +3,16 @@ config:
   theme: neo
 ---
 erDiagram
+    CARRERAS {
+        int id PK
+        string nombre
+    }
+    
+    ROLES {
+        int id PK
+        string nombre
+    }
+
     USUARIOS {
         int id PK
         string matricula
@@ -11,7 +21,8 @@ erDiagram
         string apellido_paterno
         string apellido_materno
         string password
-        string rol
+        int rol_id FK
+        int carrera_id FK
         string login_cookie
     }
 
@@ -56,6 +67,8 @@ erDiagram
         string fecha
     }
 
+    USUARIOS ||--|| ROLES : tiene
+    USUARIOS ||--|| CARRERAS : tiene
     USUARIOS ||--o{ PETICIONES_TRAMITE : realiza
     PROCEDIMIENTOS ||--o{ PETICIONES_TRAMITE : genera
     PETICIONES_TRAMITE ||--|| PAGOS : tiene
