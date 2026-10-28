@@ -1,17 +1,7 @@
 -- Datos de prueba / seed para MariaDB
 INSERT INTO usuarios (matricula, correo, nombres, apellido_paterno, apellido_materno, password, rol) VALUES
-    ('a20203669', 'a20203669@alumnos.uady.mx', 'Emmanuel Adrian', 'Flores', 'Noh', 'Prueba', 'Alumno');
-
-INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses) VALUES
-    ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6);
-INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES
-    (1, 1, 'En confirmación de pago', '2026-04-01 10:00:00');
-
-
-
---- Datos de prueba general
-INSERT INTO usuarios (matricula, correo, nombres, apellido_paterno, apellido_materno, password, rol, login_cookie) VALUES 
-    ('a20202162', 'a20202162@alumnos.uady.mx', 'José Manuel', 'López', 'Pérez', 'pass2162', 'Revisor',),
+    ('a20203669', 'a20203669@alumnos.uady.mx', 'Emmanuel Adrian', 'Flores', 'Noh', 'Prueba', 'Alumno'),
+    ('a20202162', 'a20202162@alumnos.uady.mx', 'José Manuel', 'López', 'Pérez', 'pass2162', 'Revisor'),
     ('a20202836', 'a20202836@alumnos.uady.mx', 'José Luis', 'González', 'Pérez', 'pass2836', 'Revisor'),
     ('a20203182', 'a20203182@alumnos.uady.mx', 'María Guadalupe', 'Hernández', 'Sánchez', 'pass3182', 'Alumno'),
     ('a20202211', 'a20202211@alumnos.uady.mx', 'José Luis', 'González', 'Rodríguez', 'pass2211', 'Alumno'),
@@ -22,27 +12,30 @@ INSERT INTO usuarios (matricula, correo, nombres, apellido_paterno, apellido_mat
     ('a20202132', 'a20202132@alumnos.uady.mx', 'María Guadalupe', 'Martínez', 'Pérez', 'pass2132', 'Alumno'),
     ('a20203466', 'a20203466@alumnos.uady.mx', 'Luis Miguel', 'López', 'Sánchez', 'pass3466', 'Alumno');
 
-INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses) VALUES 
-('Certificado parcial', 'Documento que avala las materias cursadas y aprobadas hasta la fecha solicitada.', 300.0, 12),
-('Kardex certificado', 'Historial académico completo con firma oficial de la facultad.', 200.0, 6);
+INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses) VALUES
+    ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6),
+    ('Certificado parcial', 'Documento que avala las materias cursadas y aprobadas hasta la fecha solicitada.', 300.0, 12),
+    ('Kardex certificado', 'Historial académico completo con firma oficial de la facultad.', 200.0, 6);
+    
+INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES
+    (1, 1, 'Finalizado', '2026-10-25 00:19:27'),
+    (3, 2, 'En trámite', '2026-10-21 00:19:27'),
+    (4, 1, 'Finalizado', '2026-10-14 00:19:27'),
+    (4, 2, 'En confirmación de pago', '2026-10-18 00:19:27'),
+    (5, 1, 'Archivado', '2026-10-17 00:19:27'),
+    (5, 2, 'En trámite', '2026-10-25 00:19:27'),
+    (6, 1, 'En trámite', '2026-10-17 00:19:27'),
+    (6, 2, 'Finalizado', '2026-10-27 00:19:27'),
+    (7, 1, 'En confirmación de pago', '2026-10-26 00:19:27'),
+    (7, 2, 'En trámite', '2026-10-19 00:19:27'),
+    (8, 1, 'Archivado', '2026-10-27 00:19:27'),
+    (8, 2, 'En trámite', '2026-10-22 00:19:27'),
+    (9, 1, 'Finalizado', '2026-10-19 00:19:27'),
+    (9, 2, 'En trámite', '2026-10-19 00:19:27'),
+    (10, 1, 'En confirmación de pago', '2026-10-23 00:19:27'),
+    (10, 2, 'Finalizado', '2026-10-20 00:19:27');
 
-INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES 
-(3, 1, 'Finalizado', '2026-10-25 00:19:27'),
-(3, 2, 'En trámite', '2026-10-21 00:19:27'),
-(4, 1, 'Finalizado', '2026-10-14 00:19:27'),
-(4, 2, 'En confirmación de pago', '2026-10-18 00:19:27'),
-(5, 1, 'Archivado', '2026-10-17 00:19:27'),
-(5, 2, 'En trámite', '2026-10-25 00:19:27'),
-(6, 1, 'En trámite', '2026-10-17 00:19:27'),
-(6, 2, 'Finalizado', '2026-10-27 00:19:27'),
-(7, 1, 'En confirmación de pago', '2026-10-26 00:19:27'),
-(7, 2, 'En trámite', '2026-10-19 00:19:27'),
-(8, 1, 'Archivado', '2026-10-27 00:19:27'),
-(8, 2, 'En trámite', '2026-10-22 00:19:27'),
-(9, 1, 'Finalizado', '2026-10-19 00:19:27'),
-(9, 2, 'En trámite', '2026-10-19 00:19:27'),
-(10, 1, 'En confirmación de pago', '2026-10-23 00:19:27'),
-(10, 2, 'Finalizado', '2026-10-20 00:19:27');
+
 
 INSERT INTO pagos (peticion_id, metodo_pago, monto, estado_pago, fecha) VALUES 
 (1, 'Tarjeta de Crédito / Débito', 300.0, 'completado', '2026-10-25 01:19:27'),
