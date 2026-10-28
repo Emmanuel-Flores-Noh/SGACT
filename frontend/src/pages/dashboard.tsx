@@ -45,13 +45,32 @@ export default function Dashboard(): React.JSX.Element {
   }
 
   useEffect(()=> {
+    const esRutaAlumno = location.pathname.startsWith('/dashboard/alumno');
+    const esRutaRevisor = location.pathname.startsWith('/dashboard/revisor');
+    const mensajeAcceso = esRutaAlumno
+      ? 'Inicia sesión con una cuenta de alumno para continuar.'
+      : 'Inicia sesión para continuar.';
+
     getUserData().then((res) => {
       if( ! res.ok ) {
-        navigate('/');
+        navigate('/', { replace: true, state: { mensaje: mensajeAcceso } });
         return;
       }
 
       res.json().then( (value:Usuario) => {
+        const rolNoPermitido =
+          (esRutaAlumno && value.rol !== 'Alumno') ||
+          (esRutaRevisor && value.rol !== 'Revisor');
+
+        if( rolNoPermitido ) {
+          const rolRequerido = esRutaAlumno ? 'alumno' : 'revisor';
+          navigate('/', {
+            replace: true,
+            state: { mensaje: `Inicia sesión con una cuenta de ${rolRequerido} para continuar.` },
+          });
+          return;
+        }
+
         setUserData(value);
         setLoading(false);
 

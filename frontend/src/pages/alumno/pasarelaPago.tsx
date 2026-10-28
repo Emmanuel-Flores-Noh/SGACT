@@ -131,6 +131,14 @@ export default function PasarelaPago(): React.JSX.Element {
       const resultado = await confirmarPago(carga.procedimiento.id, metodo, datos);
       setConfirmacion(resultado);
     } catch (error) {
+      if (error instanceof ErrorPago && error.status === 403) {
+        navigate('/', {
+          replace: true,
+          state: { mensaje: 'Inicia sesión con una cuenta de alumno para continuar.' },
+        });
+        return;
+      }
+
       const erroresServidor = error instanceof ErrorPago ? error.errores : {};
 
       if (Object.keys(erroresServidor).length > 0) {

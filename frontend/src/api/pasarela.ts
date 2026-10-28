@@ -10,11 +10,13 @@ export interface ConfirmacionPago {
 }
 
 export class ErrorPago extends Error {
+  status: number;
   errores: Record<string, string>;
 
-  constructor(mensaje: string, errores: Record<string, string> = {}) {
+  constructor(mensaje: string, status: number, errores: Record<string, string> = {}) {
     super(mensaje);
     this.name = 'ErrorPago';
+    this.status = status;
     this.errores = errores;
   }
 }
@@ -42,7 +44,7 @@ export async function confirmarPago(
       // La respuesta no tuvo cuerpo JSON; se conserva el mensaje por omisión.
     }
 
-    throw new ErrorPago(mensaje, errores);
+    throw new ErrorPago(mensaje, res.status, errores);
   }
 
   return res.json();
