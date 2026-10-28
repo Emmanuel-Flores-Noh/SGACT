@@ -34,7 +34,7 @@ const METODOS_PAGO: Array<{ id: MetodoPagoId; label: string; descripcion: string
 const formatoCosto = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 
 const claseInput = (error?: string) =>
-  `w-full rounded-sm border ${error ? 'border-err-600' : 'border-gris-300'} bg-blanco px-3.5 py-2.5 text-base text-tinta placeholder:text-gris-500 outline-none transition focus:border-azul-institucional focus:ring-1 focus:ring-azul-institucional`;
+  `w-full rounded-sm border ${error ? 'border-err-600' : 'border-gris-300'} bg-blanco px-3.5 py-2.5 text-base text-tinta placeholder:text-gris-500 outline-none transition focus:border-azul-institucional focus:ring-2 focus:ring-azul-institucional focus:ring-offset-2 focus:ring-offset-blanco disabled:cursor-not-allowed disabled:border-gris-200 disabled:bg-gris-100 disabled:text-gris-500`;
 
 interface CampoTextoProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'id'> {
   id: string;
@@ -197,7 +197,7 @@ export default function PasarelaPago(): React.JSX.Element {
 
   if (confirmacion) {
     return <main className="mx-auto max-w-4xl px-4 py-8 escritorio:py-10">
-        <div className="grid gap-6 escritorio:grid-cols-[1fr_1fr] escritorio:items-start">
+        <div className="grid gap-6 escritorio:grid-cols-2 escritorio:items-start">
           <section className="rounded bg-blanco p-6 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h1 className="text-xl font-bold text-azul-texto">Solicitud registrada</h1>
@@ -321,7 +321,7 @@ export default function PasarelaPago(): React.JSX.Element {
 
                 return <label
                   key={metodo.id}
-                  className={`flex cursor-pointer items-start gap-3 rounded-sm border p-4 transition-colors duration-150 ${
+                  className={`flex cursor-pointer items-start gap-3 rounded-sm border p-4 transition-colors duration-150 focus-within:ring-2 focus-within:ring-azul-institucional focus-within:ring-offset-2 focus-within:ring-offset-blanco ${
                     seleccionado
                       ? 'border-azul-institucional bg-azul-050'
                       : 'border-gris-300 bg-blanco hover:bg-gris-050'
@@ -334,7 +334,7 @@ export default function PasarelaPago(): React.JSX.Element {
                     value={metodo.id}
                     checked={seleccionado}
                     onChange={() => seleccionarMetodo(metodo.id)}
-                    className="mt-1 h-4 w-4 accent-azul-institucional"
+                    className="mt-1 h-4 w-4 accent-azul-institucional focus-visible:outline-none"
                   />
                   <span>
                     <span className="block text-base font-semibold text-tinta">{metodo.label}</span>
