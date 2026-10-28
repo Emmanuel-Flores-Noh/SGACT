@@ -17,3 +17,13 @@ export async function obtenerProcedimientos(): Promise<Procedimiento[]> {
 
   return res.json();
 }
+
+export async function obtenerProcedimiento(id: number): Promise<Procedimiento> {
+  const res = await fetch(`${API_URL}/api/procedimientos/${id}`, { credentials: 'include' });
+
+  if (!res.ok) {
+    throw new Error(`Error ${res.status} al obtener el procedimiento`);
+  }
+
+  return res.json();
+}

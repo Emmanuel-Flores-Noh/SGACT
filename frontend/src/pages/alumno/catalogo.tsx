@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { obtenerProcedimientos, Procedimiento } from "../../api/procedimientos"
 import { CardProcedimiento } from "../../components";
 
@@ -9,6 +10,7 @@ type Carga =
 
 export default function Catalogo(): React.JSX.Element {
   const [carga, setCarga] = useState<Carga>({ estado: 'cargando' });
+  const navigate = useNavigate();
 
   const cargar = () => {
     setCarga({ estado: 'cargando' });
@@ -20,7 +22,7 @@ export default function Catalogo(): React.JSX.Element {
   useEffect(cargar, []);
 
   const handleSolicitar = (procedimiento: Procedimiento) => {
-    console.log('Trámite solicitado:', procedimiento);
+    navigate(`/dashboard/alumno/pasarela/${procedimiento.id}`);
   };
   
   const gestionarCarga = () => {

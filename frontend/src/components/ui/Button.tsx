@@ -16,7 +16,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-semibold rounded-sm transition duration-150 outline-none focus-visible:ring-2 focus-visible:ring-azul-institucional focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gris-100 disabled:text-gris-500 disabled:border-gris-200';
+    'inline-flex items-center justify-center font-semibold rounded-sm transition duration-150 outline-none focus-visible:ring-2 focus-visible:ring-azul-institucional focus-visible:ring-offset-2 focus-visible:ring-offset-blanco disabled:cursor-not-allowed disabled:bg-gris-100 disabled:text-gris-500 disabled:border-gris-200';
 
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-xs',
@@ -28,7 +28,7 @@ export const Button: React.FC<ButtonProps> = ({
     primary:
       'rounded-sm bg-azul-institucional px-6 py-2.5 text-base font-semibold text-blanco transition-colors duration-150 hover:bg-azul-institucional-enfoque active:bg-azul-institucional-enfoque focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azul-institucional focus-visible:ring-offset-2',
     secondary:
-      'bg-gris-100 text-gris-700 hover:bg-gris-200 active:bg-gris-300',
+      'bg-gris-100 text-gris-700 hover:bg-gris-200 active:bg-gris-200',
     outline:
       'border border-gris-300 bg-blanco text-tinta hover:bg-gris-050 active:bg-gris-100',
     danger:
