@@ -1,12 +1,7 @@
 import { Request, Response } from "express";
 import PeticionTramite from "../models/peticionTramite";
 import Procedimiento from "../models/procedimiento";
-
-const METODOS_PAGO = [
-    'Tarjeta de crédito o débito',
-    'Transferencia bancaria',
-    'Pago en OXXO',
-];
+import { validarDatosPago } from "../validators/pago.validator";
 
 async function confirmarPago(req: Request, res: Response) {
     const alumno_id = req.session.usuarioId;
@@ -20,10 +15,18 @@ async function confirmarPago(req: Request, res: Response) {
     }
 
     const procedimiento_id = Number(req.body.procedimiento_id);
-    const metodo_pago = req.body.metodo_pago;
 
-    if (!Number.isInteger(procedimiento_id) || !METODOS_PAGO.includes(metodo_pago)) {
-        return res.status(400).json({ mensaje: "Datos de pago incompletos o inválidos" });
+    if (!Number.isInteger(procedimiento_id) || procedimiento_id <= 0) {
+        return res.status(400).json({ mensaje: "El trámite seleccionado no es válido." });
+    }
+
+    const validacion = validarDatosPago(req.body.metodo_pago, req.body.datos_pago);
+
+    if (!validacion.valido) {
+        return res.status(400).json({
+            mensaje: "Revisa los datos de pago.",
+            errores: validacion.errores,
+        });
     }
 
     try {
@@ -36,7 +39,7 @@ async function confirmarPago(req: Request, res: Response) {
         const { peticionId, pagoId } = await PeticionTramite.crearPeticionConPago(
             alumno_id,
             procedimiento_id,
-            metodo_pago,
+            validacion.metodo_label,
             procedimiento.costo
         );
 
@@ -53,5 +56,4 @@ async function confirmarPago(req: Request, res: Response) {
 
 export {
     confirmarPago,
-    METODOS_PAGO,
 }

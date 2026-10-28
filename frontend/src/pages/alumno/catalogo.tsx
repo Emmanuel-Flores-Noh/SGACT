@@ -22,9 +22,7 @@ export default function Catalogo(): React.JSX.Element {
   useEffect(cargar, []);
 
   const handleSolicitar = (procedimiento: Procedimiento) => {
-    navigate(`/dashboard/alumno/pasarela/${procedimiento.id}`, {
-      state: { procedimiento },
-    });
+    navigate(`/dashboard/alumno/pasarela/${procedimiento.id}`);
   };
   
   const gestionarCarga = () => {
