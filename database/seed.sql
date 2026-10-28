@@ -1,16 +1,16 @@
 -- Datos de prueba / seed para MariaDB
 INSERT INTO usuarios (matricula, correo, nombres, apellido_paterno, apellido_materno, password, rol) VALUES
     ('a20203669', 'a20203669@alumnos.uady.mx', 'Emmanuel Adrian', 'Flores', 'Noh', 'Prueba', 'Alumno'),
-    ('a20202162', 'a20202162@alumnos.uady.mx', 'José Manuel', 'López', 'Pérez', 'pass2162', 'Revisor'),
-    ('a20202836', 'a20202836@alumnos.uady.mx', 'José Luis', 'González', 'Pérez', 'pass2836', 'Revisor'),
-    ('a20203182', 'a20203182@alumnos.uady.mx', 'María Guadalupe', 'Hernández', 'Sánchez', 'pass3182', 'Alumno'),
-    ('a20202211', 'a20202211@alumnos.uady.mx', 'José Luis', 'González', 'Rodríguez', 'pass2211', 'Alumno'),
-    ('a20202304', 'a20202304@alumnos.uady.mx', 'Ana Paula', 'López', 'Rodríguez', 'pass2304', 'Alumno'),
-    ('a20201150', 'a20201150@alumnos.uady.mx', 'Juan Carlos', 'González', 'Rodríguez', 'pass1150', 'Alumno'),
-    ('a20201926', 'a20201926@alumnos.uady.mx', 'Juan Carlos', 'Martínez', 'Ramírez', 'pass1926', 'Alumno'),
-    ('a20203631', 'a20203631@alumnos.uady.mx', 'María del Carmen', 'Hernández', 'Sánchez', 'pass3631', 'Alumno'),
-    ('a20202132', 'a20202132@alumnos.uady.mx', 'María Guadalupe', 'Martínez', 'Pérez', 'pass2132', 'Alumno'),
-    ('a20203466', 'a20203466@alumnos.uady.mx', 'Luis Miguel', 'López', 'Sánchez', 'pass3466', 'Alumno');
+    ('a20202162', 'a20202162@alumnos.uady.mx', 'José Manuel', 'López', 'Pérez', 'pass2162', 1, 2),
+    ('a20202836', 'a20202836@alumnos.uady.mx', 'José Luis', 'González', 'Pérez', 'pass2836', 2, 2),
+    ('a20203182', 'a20203182@alumnos.uady.mx', 'María Guadalupe', 'Hernández', 'Sánchez', 'pass3182', 1, 1),
+    ('a20202211', 'a20202211@alumnos.uady.mx', 'José Luis', 'González', 'Rodríguez', 'pass2211', 1, 1),
+    ('a20202304', 'a20202304@alumnos.uady.mx', 'Ana Paula', 'López', 'Rodríguez', 'pass2304', 2, 1),
+    ('a20201150', 'a20201150@alumnos.uady.mx', 'Juan Carlos', 'González', 'Rodríguez', 'pass1150', 1, 1),
+    ('a20201926', 'a20201926@alumnos.uady.mx', 'Juan Carlos', 'Martínez', 'Ramírez', 'pass1926', 1, 1),
+    ('a20203631', 'a20203631@alumnos.uady.mx', 'María del Carmen', 'Hernández', 'Sánchez', 'pass3631', 1, 1),
+    ('a20202132', 'a20202132@alumnos.uady.mx', 'María Guadalupe', 'Martínez', 'Pérez', 'pass2132', 1, 1),
+    ('a20203466', 'a20203466@alumnos.uady.mx', 'Luis Miguel', 'López', 'Sánchez', 'pass3466', 2, 1);
 
 INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses) VALUES
     ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6),
