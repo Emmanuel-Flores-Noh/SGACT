@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { confirmarPago, ConfirmacionPago, ErrorPago } from "../../api/pasarela"
 import { useProcedimiento } from "../../hooks/useProcedimiento"
@@ -84,6 +84,7 @@ export default function PasarelaPago(): React.JSX.Element {
   const [errorEnvio, setErrorEnvio] = useState('');
   const [errorPago, setErrorPago] = useState('');
   const [confirmacion, setConfirmacion] = useState<ConfirmacionPago | null>(null);
+  const procesandoRef = useRef(false);
 
   const actualizarCampo = (campo: keyof DatosPago, valor: string) => {
     setDatos((previos) => ({ ...previos, [campo]: valor }));
@@ -116,10 +117,11 @@ export default function PasarelaPago(): React.JSX.Element {
   };
 
   const procesarPago = async (metodo: MetodoPagoId) => {
-    if (carga.estado !== 'listo') {
+    if (carga.estado !== 'listo' || procesandoRef.current) {
       return;
     }
 
+    procesandoRef.current = true;
     setEnviando(true);
     setErrorEnvio('');
     setErrorPago('');
@@ -139,6 +141,7 @@ export default function PasarelaPago(): React.JSX.Element {
         setErrorPago(error instanceof Error ? error.message : 'No se pudo procesar el pago del trámite.');
       }
     } finally {
+      procesandoRef.current = false;
       setEnviando(false);
     }
   };
