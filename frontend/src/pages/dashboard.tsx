@@ -22,8 +22,8 @@ const navOptions: {Alumno: Array<userNavOptions>, Revisor: Array<userNavOptions>
   ],
   "Revisor": [
     {
-      url: "/dashboard/revisor/pendientes",
-      name: "Pendientes"
+      url: "/dashboard/revisor/bandeja",
+      name: "Bandeja"
     },
     {
       url: "/dashboard/revisor/historial",
@@ -77,7 +77,7 @@ export default function Dashboard(): React.JSX.Element {
         const esRaizDelDashboard = location.pathname === '/dashboard' || location.pathname === '/dashboard/';
 
         if( esRaizDelDashboard ) {
-          navigate(value.rol === 'Revisor' ? '/dashboard/revisor/' : '/dashboard/alumno/catalogo');
+          navigate(value.rol === 'Revisor' ? '/dashboard/revisor/bandeja' : '/dashboard/alumno/catalogo');
         }
       });
     })

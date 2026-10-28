@@ -2,12 +2,14 @@ import { POST, GET } from "./apiConnection";
 
 export interface Usuario {
     id: number,
+    // Si es revisor no tiene matricula
     matricula: string | undefined,
+    carrera: string | undefined,
     correo: string,
     nombres: string,
     apellido_paterno: string,
     apellido_materno: string,
-    rol: string,
+    rol: "Alumno" | "Revisor",
 };
 
 

@@ -1,3 +1,13 @@
+CREATE TABLE IF NOT EXISTS roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(25)
+);
+
+CREATE TABLE IF NOT EXISTS carreras (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50)
+);
+
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     matricula VARCHAR(9),
@@ -6,9 +16,12 @@ CREATE TABLE IF NOT EXISTS usuarios (
     apellido_paterno VARCHAR(20),
     apellido_materno VARCHAR(20),
     password VARCHAR(50),
-    -- Alumno o Revisor
-    rol VARCHAR(10),
-    login_cookie VARCHAR(30)
+    carrera_id INT,
+    login_cookie VARCHAR(30),
+    rol_id INT,
+
+    CONSTRAINT fk_rol_id FOREIGN KEY (rol_id) REFERENCES roles(id),
+    CONSTRAINT fk_carrera_id FOREIGN KEY (carrera_id) REFERENCES carreras(id)
 );
 
 CREATE TABLE IF NOT EXISTS procedimientos (
