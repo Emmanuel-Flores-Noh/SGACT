@@ -4,4 +4,5 @@ export interface IProcedimiento {
   descripcion: string;
   costo: number;
   vigencia_meses: number;
+  archivo_plantilla: string;
 }

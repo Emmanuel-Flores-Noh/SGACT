@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS procedimientos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50),
     descripcion VARCHAR(200),
+    archivo_plantilla VARCHAR(100),
     costo FLOAT,
     vigencia_meses INT
 );

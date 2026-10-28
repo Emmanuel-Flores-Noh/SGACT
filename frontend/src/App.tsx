@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Login from "./pages/login";
 import Dashboard from './pages/dashboard';
 import Catalogo from './pages/alumno/catalogo';
+import Peticion from './pages/revisor/peticion';
 
 
 export default function App(): React.JSX.Element {
@@ -19,6 +20,8 @@ export default function App(): React.JSX.Element {
           <Route path="historial" />
         </Route>
       </Route>
+
+      <Route path="/revisor/atender-peticion" element={<Peticion />}/>
     </Routes>
   );
 }

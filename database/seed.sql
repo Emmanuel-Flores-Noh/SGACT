@@ -11,8 +11,8 @@ INSERT INTO usuarios (matricula, correo, nombres, apellido_paterno, apellido_mat
 INSERT INTO usuarios (correo, nombres, apellido_paterno, apellido_materno, password, rol_id) VALUES
     ('prueba@prueba.com', "Pablo", "Romero", "Munoz", "Prueba", 2);
 
-INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses) VALUES
-    ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6);
+INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses, archivo_plantilla) VALUES
+    ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6, 'constancia.hbs');
 
 
 INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES

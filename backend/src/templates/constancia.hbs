@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constancia de estudios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .user {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        .header {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+        }
+        .firma-linea { border-top: 1px solid #333; width: 200px; display: inline-block; margin-top: 50px; text-align: center; }
+	</style>
+</head>
+<body>
+    <div>
+        <h2>UNIVERSIDAD AUTÓNOMA DE YUCATÁN</h2>
+        <h3>FACULTAD DE MATEMÁTICAS</h3>
+        <p>CONSTANCIA DE ESTUDIOS</p>
+    </div>
+
+    <div class="content">
+        <p>A quien corresponda:</p>
+        <p>Por medio del presente se certifica que el/la alumno(a) <b>{{nombreCompleto}}</b>, con matrícula <b>{{matricula}}</b>, se encuentra inscrito(a) regularmente en la Licenciatura en Matemáticas de esta facultad durante el periodo escolar actual.</p>
+        <p>Se extiende la presente constancia en Mérida, Yucatán, a <b>{{fechaActual}}</b>, a petición del interesado para los fines que estime convenientes.</p>
+    </div>
+
+    <div class="footer">
+        <img src="{{firmaImagen}}" alt="">
+        <div class="firma-linea">
+            <br>
+            <span>{{revisorNombre}}</span><br>
+            <span>Control Escolar</span>
+        </div>
+    </div>
+</body>
+</html>
