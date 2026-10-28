@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import PeticionTramite from "../models/peticionTramite";
 import Procedimiento from "../models/procedimiento";
 import { validarDatosPago } from "../validators/pago.validator";
+import { ESTADO_EN_CONFIRMACION_DE_PAGO } from "../interfaces";
 
 async function confirmarPago(req: Request, res: Response) {
     const alumno_id = req.session.usuarioId;
@@ -46,7 +47,7 @@ async function confirmarPago(req: Request, res: Response) {
         res.status(201).json({
             peticion_id: peticionId,
             pago_id: pagoId,
-            estado: 'En confirmación de pago',
+            estado: ESTADO_EN_CONFIRMACION_DE_PAGO,
             monto: procedimiento.costo,
         });
     } catch (error) {

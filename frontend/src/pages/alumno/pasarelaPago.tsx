@@ -82,6 +82,7 @@ export default function PasarelaPago(): React.JSX.Element {
   const [errores, setErrores] = useState<Record<string, string>>({});
   const [enviando, setEnviando] = useState(false);
   const [errorEnvio, setErrorEnvio] = useState('');
+  const [errorPago, setErrorPago] = useState('');
   const [confirmacion, setConfirmacion] = useState<ConfirmacionPago | null>(null);
 
   const actualizarCampo = (campo: keyof DatosPago, valor: string) => {
@@ -114,7 +115,35 @@ export default function PasarelaPago(): React.JSX.Element {
     document.getElementById(idElemento)?.focus();
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const procesarPago = async (metodo: MetodoPagoId) => {
+    if (carga.estado !== 'listo') {
+      return;
+    }
+
+    setEnviando(true);
+    setErrorEnvio('');
+    setErrorPago('');
+    setErrores({});
+
+    try {
+      const resultado = await confirmarPago(carga.procedimiento.id, metodo, datos);
+      setConfirmacion(resultado);
+    } catch (error) {
+      const erroresServidor = error instanceof ErrorPago ? error.errores : {};
+
+      if (Object.keys(erroresServidor).length > 0) {
+        setErrores(erroresServidor);
+        setErrorEnvio(error instanceof Error ? error.message : 'Revisa los datos de pago.');
+        enfocarPrimerError(erroresServidor);
+      } else {
+        setErrorPago(error instanceof Error ? error.message : 'No se pudo procesar el pago del trámite.');
+      }
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (carga.estado !== 'listo') {
@@ -122,9 +151,10 @@ export default function PasarelaPago(): React.JSX.Element {
     }
 
     if (metodoPago === '') {
-      setErrores({ metodo_pago: 'Selecciona un método de pago.' });
+      const erroresMetodo = { metodo_pago: 'Selecciona un método de pago.' };
+      setErrores(erroresMetodo);
       setErrorEnvio('Selecciona un método de pago para continuar.');
-      enfocarPrimerError({ metodo_pago: 'Selecciona un método de pago.' });
+      enfocarPrimerError(erroresMetodo);
       return;
     }
 
@@ -137,28 +167,20 @@ export default function PasarelaPago(): React.JSX.Element {
       return;
     }
 
-    setEnviando(true);
-    setErrorEnvio('');
-    setErrores({});
+    void procesarPago(metodoPago);
+  };
 
-    try {
-      const resultado = await confirmarPago(carga.procedimiento.id, metodoPago, datos);
-      setConfirmacion(resultado);
-    } catch (error) {
-      if (error instanceof ErrorPago) {
-        setErrores(error.errores);
-        setErrorEnvio(error.message);
-        enfocarPrimerError(error.errores);
-      } else {
-        setErrorEnvio(error instanceof Error ? error.message : 'No se pudo procesar el pago del trámite.');
-      }
-    } finally {
-      setEnviando(false);
+  const handleReintentar = () => {
+    if (metodoPago === '') {
+      return;
     }
+
+    void procesarPago(metodoPago);
   };
 
   const volverAlCatalogo = () => navigate('/dashboard/alumno/catalogo');
   const volverAlResumen = () => navigate(`/dashboard/alumno/pasarela/${id}`);
+  const irAlSeguimiento = () => navigate('/dashboard/alumno/historial');
   const procedimientoActual = carga.estado === 'listo' ? carga.procedimiento : null;
   const etiquetaMetodo = METODOS_PAGO.find((metodo) => metodo.id === metodoPago)?.label ?? '';
 
@@ -186,12 +208,43 @@ export default function PasarelaPago(): React.JSX.Element {
                 </dd>
               </div>
             </dl>
-            <Button className="mt-6" onClick={volverAlCatalogo}>
-              Volver al catálogo
-            </Button>
+            <div className="mt-6 flex flex-col gap-3">
+              <Button fullWidth onClick={irAlSeguimiento}>
+                Ir al panel de seguimiento
+              </Button>
+              <Button variant="outline" fullWidth onClick={volverAlCatalogo}>
+                Volver al catálogo
+              </Button>
+            </div>
           </section>
 
           {procedimientoActual && <ResumenProcedimiento procedimiento={procedimientoActual} />}
+        </div>
+      </main>;
+  }
+
+  if (errorPago !== '') {
+    return <main className="mx-auto max-w-2xl px-4 py-8 escritorio:py-10">
+        <PasosPasarela paso={2} />
+        <div className="mt-6 rounded bg-blanco p-6 shadow-sm">
+          <h1 className="text-xl font-bold text-azul-texto">No se pudo procesar el pago</h1>
+          <Alert type="error" className="mt-4">
+            {errorPago}
+          </Alert>
+          <p className="mt-3 text-base text-gris-700">
+            Tu solicitud no fue registrada. Puedes intentarlo de nuevo sin volver a capturar tus datos.
+          </p>
+          <div className="mt-6 flex flex-col gap-3">
+            <Button fullWidth onClick={handleReintentar}>
+              Reintentar pago
+            </Button>
+            <Button variant="outline" fullWidth onClick={volverAlResumen}>
+              Volver al resumen
+            </Button>
+            <Button variant="secondary" fullWidth onClick={volverAlCatalogo}>
+              Cancelar
+            </Button>
+          </div>
         </div>
       </main>;
   }
@@ -211,6 +264,22 @@ export default function PasarelaPago(): React.JSX.Element {
   if (carga.estado === 'cargando') {
     return <main className="mx-auto max-w-2xl px-4 py-8 escritorio:py-10">
         <LoadingScreen fullScreen={false} mensaje="Cargando el trámite..." />
+      </main>;
+  }
+
+  if (enviando) {
+    return <main className="mx-auto max-w-2xl px-4 py-8 escritorio:py-10">
+        <PasosPasarela paso={2} />
+        <div className="mt-6 rounded bg-blanco p-6 shadow-sm">
+          <h1 className="text-xl font-bold text-azul-texto">Procesando tu pago</h1>
+          <p className="mt-1 text-sm text-gris-700">
+            Trámite: <span className="font-semibold text-tinta">{carga.procedimiento.nombre}</span>
+          </p>
+          <LoadingScreen fullScreen={false} mensaje="Procesando pago..." />
+          <p className="text-center text-sm text-gris-700">
+            No cierres esta ventana mientras registramos tu solicitud.
+          </p>
+        </div>
       </main>;
   }
 

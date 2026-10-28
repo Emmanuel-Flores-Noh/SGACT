@@ -1,10 +1,10 @@
 import pool from "../config/dbConnection";
-import { EstadoPeticion, IPeticionTramite } from "../interfaces";
+import { ESTADO_EN_CONFIRMACION_DE_PAGO, EstadoPeticion, IPeticionTramite } from "../interfaces";
 import HistorialEstados from "./historialEstados";
 export default class PeticionTramite {
     public static async obtenerPeticionesPorAlumno(alumno_id:number): Promise<IPeticionTramite[]> {
-        const QUERY = `Select alumno_id, procedimiento_id, estado, fecha_solicitud from peticiones_tramite where alumno_id = '${alumno_id}';`;
-        const res = await pool.query(QUERY);
+        const QUERY = `SELECT id, alumno_id, procedimiento_id, estado, fecha_solicitud FROM peticiones_tramite WHERE alumno_id = ? ORDER BY fecha_solicitud DESC;`;
+        const res = await pool.query(QUERY, [alumno_id]);
         return res || [];
     }
     public static async obtenerPeticionesTotales(): Promise<IPeticionTramite[]> {
@@ -15,7 +15,7 @@ export default class PeticionTramite {
     public static async crearPeticionTramite(alumno_id:number, procedimiento_id: number): Promise<number> {
         const fecha_solicitud = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const QUERY = `INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES (?, ?, ?, ?);`;
-        const res = await pool.query(QUERY, [alumno_id, procedimiento_id, 'En confirmación de pago', fecha_solicitud]);
+        const res = await pool.query(QUERY, [alumno_id, procedimiento_id, ESTADO_EN_CONFIRMACION_DE_PAGO, fecha_solicitud]);
         return Number(res.insertId);
     }
     public static async crearPeticionConPago(
@@ -32,7 +32,7 @@ export default class PeticionTramite {
 
             const resPeticion = await conn.query(
                 `INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES (?, ?, ?, ?);`,
-                [alumno_id, procedimiento_id, 'En confirmación de pago', fecha]
+                [alumno_id, procedimiento_id, ESTADO_EN_CONFIRMACION_DE_PAGO, fecha]
             );
             const peticionId = Number(resPeticion.insertId);
 
@@ -44,7 +44,7 @@ export default class PeticionTramite {
 
             await conn.query(
                 `INSERT INTO historial_estados (peticion_id, estado_anterior, estado_nuevo, fecha) VALUES (?, ?, ?, ?);`,
-                [peticionId, 'Inicio', 'En confirmación de pago', fecha]
+                [peticionId, 'Inicio', ESTADO_EN_CONFIRMACION_DE_PAGO, fecha]
             );
 
             await conn.commit();
