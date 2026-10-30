@@ -1,5 +1,5 @@
 import pool from "../config/dbConnection";
-import { EstadoPeticion, IPeticionTramite } from "../interfaces";
+import { EstadoPeticion, IPeticionTramite, ESTADO_EN_CONFIRMACION_DE_PAGO } from "../interfaces";
 import HistorialEstados from "./historialEstados";
 export default class PeticionTramite {
     public static async obtenerPeticionesPorAlumno(alumno_id:number): Promise<IPeticionTramite[]> {
@@ -73,6 +73,44 @@ export default class PeticionTramite {
             return rows[0] as IPeticionTramite;
         }
         return null;
+    }
+    public static async crearPeticionConPago(
+        alumno_id: number,
+        procedimiento_id: number,
+        metodo_pago: string,
+        monto: number
+    ): Promise<{ peticionId: number; pagoId: number }> {
+        const fecha = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const conn: any = await pool.getConnection();
+
+        try {
+            await conn.beginTransaction();
+
+            const resPeticion = await conn.query(
+                `INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES (?, ?, ?, ?);`,
+                [alumno_id, procedimiento_id, ESTADO_EN_CONFIRMACION_DE_PAGO, fecha]
+            );
+            const peticionId = Number(resPeticion.insertId);
+
+            const resPago = await conn.query(
+                `INSERT INTO pagos (peticion_id, metodo_pago, monto, estado_pago, fecha) VALUES (?, ?, ?, ?, ?);`,
+                [peticionId, metodo_pago, monto, 'pendiente', fecha]
+            );
+            const pagoId = Number(resPago.insertId);
+
+            await conn.query(
+                `INSERT INTO historial_estados (peticion_id, estado_anterior, estado_nuevo, fecha) VALUES (?, ?, ?, ?);`,
+                [peticionId, 'Inicio', ESTADO_EN_CONFIRMACION_DE_PAGO, fecha]
+            );
+
+            await conn.commit();
+            return { peticionId, pagoId };
+        } catch (error) {
+            await conn.rollback();
+            throw error;
+        } finally {
+            conn.release();
+        }
     }
 
 }

@@ -2,11 +2,10 @@ import { Request, Response } from "express";
 import HistorialEstados from "../models/historialEstados";
 import PeticionTramite from "../models/peticionTramite";
 import StatusCodes from "http-status-codes";
-
-const ROL_REVISOR = "revisor";
+import Usuario from "../models/usuario";
 
 async function obtenerHistorialPeticion(req: Request, res: Response) {
-    if (!req.session.rol || !req.session.usuarioId) {
+    if (!req.session.usuarioId) {
         return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: No ha iniciado sesión" });
     }
 
@@ -21,7 +20,9 @@ async function obtenerHistorialPeticion(req: Request, res: Response) {
             return res.status(StatusCodes.NOT_FOUND).json({ mensaje: "Proceso fallido: Petición no encontrada" });
         }
 
-        if (req.session.rol.toLowerCase() !== ROL_REVISOR) {
+        const esRevisor = await Usuario.comprobarRevisor(Number(req.session.usuarioId));
+
+        if (!esRevisor) {
             if (Number(peticion.alumno_id) !== Number(req.session.usuarioId)) {
                 return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: No puedes ver el historial de peticiones de otros alumnos" });
             }
@@ -35,18 +36,22 @@ async function obtenerHistorialPeticion(req: Request, res: Response) {
 }
 
 async function obtenerHistorialPorAlumno(req: Request, res: Response) {
-    if (!req.session.rol || !req.session.usuarioId) {
+    if (!req.session.usuarioId) {
         return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: No ha iniciado sesión" });
     }
+    
     let alumno_id: number;
+    const esRevisor = await Usuario.comprobarRevisor(Number(req.session.usuarioId));
 
-    if (req.session.rol.toLowerCase() === ROL_REVISOR) {
+    if (esRevisor) {
+        // Si es revisor, puede especificar a qué alumno quiere consultar por parámetro
         const alumnoParam = req.params.alumno_id || req.query.alumno_id;
         if (!alumnoParam) {
             return res.status(StatusCodes.BAD_REQUEST).json({ mensaje: "Parámetros: El revisor debe especificar el alumno_id" });
         }
         alumno_id = Number(alumnoParam);
     } else {
+        // Si es alumno, solo puede ver su propio historial
         alumno_id = Number(req.session.usuarioId);
     }
 
@@ -63,13 +68,18 @@ async function obtenerHistorialPorAlumno(req: Request, res: Response) {
 }
 
 async function obtenerHistorialPeticiones(req: Request, res: Response) {
-    if (!req.session.rol || req.session.rol.toLowerCase() !== ROL_REVISOR) {
+    if (!req.session.usuarioId) {
+        return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: No ha iniciado sesión" });
+    }
+
+    const esRevisor = await Usuario.comprobarRevisor(Number(req.session.usuarioId));
+    if (!esRevisor) {
         return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: Se requiere rol de Revisor" });
     }
 
     try {
         const historialGlobal = await HistorialEstados.obtenerHistorialPeticiones();
-        console.log("TOTAL DE HISTORIALES OBTENIDOS:", historialGlobal.length); // <-- Añade esto
+        console.log("TOTAL DE HISTORIALES OBTENIDOS:", historialGlobal.length);
         return res.status(StatusCodes.OK).json(historialGlobal);
     } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensaje: "Proceso fallido: No se pudo obtener el historial general" });
@@ -77,7 +87,12 @@ async function obtenerHistorialPeticiones(req: Request, res: Response) {
 }
 
 async function registrarHistorialPeticion(req: Request, res: Response) {
-    if (!req.session.rol || req.session.rol.toLowerCase() !== ROL_REVISOR) {
+    if (!req.session.usuarioId) {
+        return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: No ha iniciado sesión" });
+    }
+
+    const esRevisor = await Usuario.comprobarRevisor(Number(req.session.usuarioId));
+    if (!esRevisor) {
         return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: Usted no tiene autorización para realizar esta acción" });
     }
 

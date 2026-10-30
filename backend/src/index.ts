@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import usuarioRoutes from './routes/usuario.routes';
@@ -7,6 +8,7 @@ import loginRoutes from './routes/login.routes';
 import procedimientoRoutes from './routes/procedimiento.routes';
 import peticionesTramite from './routes/peticionesTramite.routes';
 import historialPeticiones from './routes/historial.routes';
+import pasarelaRoutes from './routes/pasarela.routes';
 import verificarAuth from './middlewares/verificarAuth';
 import verificarPermisoPeticion from './middlewares/verificarPermisoPeticion';
 
@@ -36,10 +38,9 @@ app.use('/api/usuario', verificarAuth)
 app.use('/api/usuario', usuarioRoutes)
 app.use('/api/auth', loginRoutes)
 app.use('/api/procedimientos', procedimientoRoutes)
-app.use('/api/peticiones',   verificarPermisoPeticion)
 app.use('/api/peticiones',  peticionesTramite)
-app.use('/api/historial',  verificarPermisoPeticion)
 app.use('/api/historial', historialPeticiones)
+app.use('/api/pasarela', verificarAuth, pasarelaRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

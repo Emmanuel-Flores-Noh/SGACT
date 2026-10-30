@@ -1,8 +1,9 @@
 import { Router } from 'express'
-import { obtenerProcedimientos } from '../controllers/procedimiento.controller'
+import { obtenerProcedimiento, obtenerProcedimientos } from '../controllers/procedimiento.controller'
 
 const procedimientoRoutes = Router();
 
 procedimientoRoutes.get('/', obtenerProcedimientos)
+procedimientoRoutes.get('/:id', obtenerProcedimiento)
 
 export default procedimientoRoutes;

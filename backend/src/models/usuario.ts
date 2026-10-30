@@ -5,7 +5,9 @@ export default class Usuario {
     public static MAX_COOKIE_AGE: number = 1000 * 60 * 60 * 1; // 1 Hora
     
     public static async obtenerUsuarioPorId(id: number) {
-        const QUERY = `SELECT id, matricula, correo, nombres, apellido_paterno, apellido_materno, rol FROM usuarios WHERE id = '${id}';`;
+        const QUERY = `SELECT usuarios.id, matricula, correo, carreras.nombre AS carrera, nombres, apellido_paterno, apellido_materno, roles.nombre AS rol 
+        FROM usuarios LEFT JOIN carreras ON (usuarios.carrera_id = carreras.id) LEFT JOIN roles ON (usuarios.rol_id = roles.id) WHERE usuarios.id = '${id}';`;
+
         const res: Array<IUsuario> | undefined = await pool.query(QUERY);
         
         if( res === undefined || res.length == 0) {
@@ -61,8 +63,8 @@ export default class Usuario {
      * Comprobar si una Id es de un revisor
      */
     public static async comprobarRevisor(id: number) {
-        const QUERY = `SELECT rol FROM usuarios WHERE id='${id}'`;
-        const res = await pool.query(QUERY);
+        const QUERY = `SELECT roles.nombre AS rol FROM usuarios LEFT JOIN roles ON (usuarios.rol_id = roles.id) WHERE usuarios.id='${id}'`;
+        const res: Array<IUsuario> = await pool.query(QUERY);
         
         if( res === undefined || res.length === 0 ) {
             return false;

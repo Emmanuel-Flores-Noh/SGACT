@@ -5,7 +5,7 @@ export interface LoadingScreenProps {
   mensaje?: string;
   /** Tamaño del spinner en píxeles ('sm', 'md', 'lg') */
   size?: 'sm' | 'md' | 'lg';
-  /** Si es true, ocupa toda la pantalla (h-screen/fixed). Si es false, se ajusta a su contenedor (min-h-[200px]) */
+  /** Si es true, ocupa toda la pantalla (h-screen/fixed). Si es false, se ajusta a su contenedor (h-64) */
   fullScreen?: boolean;
   className?: string;
 }
@@ -24,7 +24,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
 
   const containerLayout = fullScreen
     ? 'min-h-screen fixed inset-0 z-50'
-    : 'min-h-[250px] w-full';
+    : 'h-64 w-full';
 
   return (
     <div

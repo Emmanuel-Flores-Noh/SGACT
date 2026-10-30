@@ -3,7 +3,7 @@ import { obtenerPeticionID, obtenerPeticiones, crearPeticion, actualizarPeticion
 
 const peticionesTramite = Router();
 // Consultas
-peticionesTramite.get('/id',obtenerPeticionID);
+peticionesTramite.get('/:id',obtenerPeticionID);
 peticionesTramite.get('/',obtenerPeticiones);
 peticionesTramite.put('/',actualizarPeticion);
 peticionesTramite.post('/',crearPeticion);

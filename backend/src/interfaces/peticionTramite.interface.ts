@@ -1,5 +1,7 @@
+export const ESTADO_EN_CONFIRMACION_DE_PAGO = 'En confirmación de pago';
+
 export type EstadoPeticion =
-  | 'En confirmación de pago'
+  | typeof ESTADO_EN_CONFIRMACION_DE_PAGO
   | 'En trámite'
   | 'Finalizado'
   | 'Archivado'
