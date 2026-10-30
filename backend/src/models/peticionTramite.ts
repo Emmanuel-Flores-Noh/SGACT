@@ -4,12 +4,12 @@ import HistorialEstados from "./historialEstados";
 export default class PeticionTramite {
     public static async obtenerPeticionesPorAlumno(alumno_id:number): Promise<IPeticionTramite[]> {
         const QUERY = `SELECT alumno_id, procedimiento_id, estado, fecha_solicitud FROM peticiones_tramite WHERE alumno_id = ?;`;
-        const [rows] = await pool.query(QUERY, [alumno_id]);
+        const rows = await pool.query(QUERY, [alumno_id]);
         return (rows as IPeticionTramite[]) || [];
     }
     public static async obtenerPeticionesTramitePorAlumno(alumno_id:number): Promise<IPeticionTramite[]> {
         const QUERY = `SELECT alumno_id, procedimiento_id, estado, fecha_solicitud FROM peticiones_tramite WHERE alumno_id = ? AND estado = 'En trámite';`;
-        const [rows] = await pool.query(QUERY, [alumno_id]);
+        const rows = await pool.query(QUERY, [alumno_id]);
         return (rows as IPeticionTramite[]) || [];
     }
     public static async obtenerPeticionesTotales(): Promise<IPeticionTramite[]> {
@@ -31,12 +31,12 @@ export default class PeticionTramite {
             WHERE pt.estado = 'En trámite' AND pg.estado_pago = 'Confirmado'
             ORDER BY pt.fecha_solicitud ASC;
         `;
-        const [rows] = await pool.query(QUERY);
+        const rows = await pool.query(QUERY);
         return (rows as IPeticionTramite[]) || [];
     }
     public static async obtenerPeticionesEnTramite(): Promise<IPeticionTramite[]> {
         const QUERY = `SELECT id, alumno_id, procedimiento_id, estado, fecha_solicitud FROM peticiones_tramite where estado = 'en tramite';`;
-        const [rows] = await pool.query(QUERY);
+        const rows = await pool.query(QUERY);
         return (rows as IPeticionTramite[]) || [];
     }
     public static async crearPeticionTramite(alumno_id:number, procedimiento_id: number){
@@ -68,7 +68,7 @@ export default class PeticionTramite {
             INNER JOIN procedimientos p ON pt.procedimiento_id = p.id
             WHERE pt.id = ?;
         `;
-        const [rows]: any = await pool.query(QUERY, [peticion_id]);
+        const rows: any = await pool.query(QUERY, [peticion_id]);
         if (rows && rows.length > 0) {
             return rows[0] as IPeticionTramite;
         }

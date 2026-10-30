@@ -8,6 +8,7 @@ import procedimientoRoutes from './routes/procedimiento.routes';
 import peticionesTramite from './routes/peticionesTramite.routes';
 import historialPeticiones from './routes/historial.routes';
 import verificarAuth from './middlewares/verificarAuth';
+import verificarPermisoPeticion from './middlewares/verificarPermisoPeticion';
 
 const app = express();
 const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -35,7 +36,9 @@ app.use('/api/usuario', verificarAuth)
 app.use('/api/usuario', usuarioRoutes)
 app.use('/api/auth', loginRoutes)
 app.use('/api/procedimientos', procedimientoRoutes)
+app.use('/api/peticiones',   verificarPermisoPeticion)
 app.use('/api/peticiones',  peticionesTramite)
+app.use('/api/historial',  verificarPermisoPeticion)
 app.use('/api/historial', historialPeticiones)
 
 app.listen(port, () => {

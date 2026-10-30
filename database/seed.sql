@@ -1,16 +1,16 @@
 -- Datos de prueba / seed para MariaDB
 INSERT INTO usuarios (matricula, correo, nombres, apellido_paterno, apellido_materno, password, rol) VALUES
     ('a20203669', 'a20203669@alumnos.uady.mx', 'Emmanuel Adrian', 'Flores', 'Noh', 'Prueba', 'Alumno'),
-    ('a20202162', 'a20202162@alumnos.uady.mx', 'José Manuel', 'López', 'Pérez', 'pass2162', 1, 2),
-    ('a20202836', 'a20202836@alumnos.uady.mx', 'José Luis', 'González', 'Pérez', 'pass2836', 2, 2),
-    ('a20203182', 'a20203182@alumnos.uady.mx', 'María Guadalupe', 'Hernández', 'Sánchez', 'pass3182', 1, 1),
-    ('a20202211', 'a20202211@alumnos.uady.mx', 'José Luis', 'González', 'Rodríguez', 'pass2211', 1, 1),
-    ('a20202304', 'a20202304@alumnos.uady.mx', 'Ana Paula', 'López', 'Rodríguez', 'pass2304', 2, 1),
-    ('a20201150', 'a20201150@alumnos.uady.mx', 'Juan Carlos', 'González', 'Rodríguez', 'pass1150', 1, 1),
-    ('a20201926', 'a20201926@alumnos.uady.mx', 'Juan Carlos', 'Martínez', 'Ramírez', 'pass1926', 1, 1),
-    ('a20203631', 'a20203631@alumnos.uady.mx', 'María del Carmen', 'Hernández', 'Sánchez', 'pass3631', 1, 1),
-    ('a20202132', 'a20202132@alumnos.uady.mx', 'María Guadalupe', 'Martínez', 'Pérez', 'pass2132', 1, 1),
-    ('a20203466', 'a20203466@alumnos.uady.mx', 'Luis Miguel', 'López', 'Sánchez', 'pass3466', 2, 1);
+    ('a20202162', 'a20202162@alumnos.uady.mx', 'José Manuel', 'López', 'Pérez', 'pass2162', 'Revisor'),
+    ('a20202836', 'a20202836@alumnos.uady.mx', 'José Luis', 'González', 'Pérez', 'pass2836', 'Revisor'),
+    ('a20203182', 'a20203182@alumnos.uady.mx', 'María Guadalupe', 'Hernández', 'Sánchez', 'pass3182', 'Alumno'),
+    ('a20202211', 'a20202211@alumnos.uady.mx', 'José Luis', 'González', 'Rodríguez', 'pass2211', 'Alumno'),
+    ('a20202304', 'a20202304@alumnos.uady.mx', 'Ana Paula', 'López', 'Rodríguez', 'pass2304', 'Alumno'),
+    ('a20201150', 'a20201150@alumnos.uady.mx', 'Juan Carlos', 'González', 'Rodríguez', 'pass1150', 'Alumno'),
+    ('a20201926', 'a20201926@alumnos.uady.mx', 'Juan Carlos', 'Martínez', 'Ramírez', 'pass1926', 'Alumno'),
+    ('a20203631', 'a20203631@alumnos.uady.mx', 'María del Carmen', 'Hernández', 'Sánchez', 'pass3631', 'Alumno'),
+    ('a20202132', 'a20202132@alumnos.uady.mx', 'María Guadalupe', 'Martínez', 'Pérez', 'pass2132', 'Alumno'),
+    ('a20203466', 'a20203466@alumnos.uady.mx', 'Luis Miguel', 'López', 'Sánchez', 'pass3466', 'Alumno');
 
 INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses) VALUES
     ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6),
@@ -38,8 +38,8 @@ INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solic
 
 
 INSERT INTO pagos (peticion_id, metodo_pago, monto, estado_pago, fecha) VALUES 
-(1, 'Tarjeta de Crédito / Débito', 300.0, 'completado', '2026-10-25 01:19:27'),
-(2, 'Tarjeta de Crédito / Débito', 200.0, 'completado', '2026-10-21 01:19:27'),
+(1, 'Tarjeta de Crédito / Débito', 150.0, 'Confirmado', '2026-10-25 01:19:27'), 
+(2, 'Tarjeta de Crédito / Débito', 300.0, 'Confirmado', '2026-10-21 01:19:27'),
 (3, 'Tarjeta de Crédito / Débito', 300.0, 'completado', '2026-10-14 01:19:27'),
 (4, 'Tarjeta de Crédito / Débito', 200.0, 'pendiente', '2026-10-18 01:19:27'),
 (5, 'Tarjeta de Crédito / Débito', 300.0, 'completado', '2026-10-17 01:19:27'),
@@ -58,6 +58,7 @@ INSERT INTO pagos (peticion_id, metodo_pago, monto, estado_pago, fecha) VALUES
 INSERT INTO historial_estados (peticion_id, estado_anterior, estado_nuevo, fecha) VALUES 
 (1, 'En confirmación de pago', 'En trámite', '2026-10-25 02:00:00'),
 (1, 'En trámite', 'Finalizado', '2026-10-26 10:00:00'),
+(1, 'Finalizado', 'Archivado', '2026-10-28 12:34:11'),
 (2, 'En confirmación de pago', 'En trámite', '2026-10-21 02:19:27'),
 (3, 'En confirmación de pago', 'En trámite', '2026-10-14 02:00:00'),
 (3, 'En trámite', 'Finalizado', '2026-10-16 12:00:00'),
