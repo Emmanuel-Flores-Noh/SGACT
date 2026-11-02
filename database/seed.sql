@@ -21,8 +21,8 @@ INSERT INTO usuarios (correo, nombres, apellido_paterno, apellido_materno, passw
     ('a20202162@uady.mx', 'José Manuel', 'López', 'Pérez', 'pass2162', 2),
     ('a20202836@uady.mx', 'José Luis', 'González', 'Pérez', 'pass2836', 2);
 
-INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses) VALUES
-    ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6);
+INSERT INTO procedimientos (nombre, descripcion, costo, vigencia_meses, archivo_plantilla) VALUES
+    ('Constancia de estudios', 'Acredita que eres alumno inscrito en la Facultad de Matemáticas durante el periodo escolar vigente.', 150, 6, 'constancia.hbs');
 
 INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES
     (1, 1, 'Finalizado', '2026-10-25 00:19:27'),

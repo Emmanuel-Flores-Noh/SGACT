@@ -6,6 +6,7 @@ import Catalogo from './pages/alumno/catalogo';
 import PasarelaPago from './pages/alumno/pasarelaPago';
 import PasarelaResumen from './pages/alumno/pasarelaResumen';
 import Historial from './pages/alumno/historial';
+import Peticion from './pages/revisor/peticion';
 
 
 export default function App(): React.JSX.Element {
@@ -24,6 +25,8 @@ export default function App(): React.JSX.Element {
           <Route path="historial" />
         </Route>
       </Route>
+
+      <Route path="/revisor/atender-peticion" element={<Peticion />}/>
     </Routes>
   );
 }

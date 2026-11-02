@@ -13,4 +13,5 @@ export interface IPeticionTramite {
   procedimiento_id: number;
   estado: EstadoPeticion;
   fecha_solicitud: string;
+  firma_id?: number | null;
 }
