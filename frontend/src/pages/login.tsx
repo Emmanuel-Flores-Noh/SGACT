@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { login } from "../api/usuario";
 // @ts-ignore
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TiWarning } from "react-icons/ti";
 
 function warningMessage(texto: string) {
@@ -19,11 +19,13 @@ function warningMessage(texto: string) {
 
 export default function Login(): React.JSX.Element {
   const navigate = useNavigate();
+  const location = useLocation();
+  const mensajeInicial = (location.state as { mensaje?: string } | null)?.mensaje ?? '';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [warning, setWarning] = useState("");
+  const [warning, setWarning] = useState(mensajeInicial);
   
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const successful = await login(email, password);

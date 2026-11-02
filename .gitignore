@@ -32,6 +32,9 @@ coverage/
 *.lcov
 .nyc_output/
 
+# Entorno local (MariaDB portable, datos, logs)
+.local/
+
 # Caches y herramientas de desarrollo
 .cache/
 .eslintcache

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Usuario, getUserData, logout } from '../api/usuario';
 // @ts-ignore
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate, Outlet, useLocation } from 'react-router-dom'
 import { Button, LoadingScreen } from '../components';
 
 interface userNavOptions {
@@ -36,6 +36,7 @@ export default function Dashboard(): React.JSX.Element {
   const [userData, setUserData] = useState<Usuario>();
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   
   const handleLogout = async () => {
     if( await logout() ) {
@@ -44,22 +45,39 @@ export default function Dashboard(): React.JSX.Element {
   }
 
   useEffect(()=> {
+    const esRutaAlumno = location.pathname.startsWith('/dashboard/alumno');
+    const esRutaRevisor = location.pathname.startsWith('/dashboard/revisor');
+    const mensajeAcceso = esRutaAlumno
+      ? 'Inicia sesión con una cuenta de alumno para continuar.'
+      : 'Inicia sesión para continuar.';
+
     getUserData().then((res) => {
       if( ! res.ok ) {
-        navigate('/');
+        navigate('/', { replace: true, state: { mensaje: mensajeAcceso } });
         return;
       }
 
       res.json().then( (value:Usuario) => {
+        const rolNoPermitido =
+          (esRutaAlumno && value.rol !== 'Alumno') ||
+          (esRutaRevisor && value.rol !== 'Revisor');
+
+        if( rolNoPermitido ) {
+          const rolRequerido = esRutaAlumno ? 'alumno' : 'revisor';
+          navigate('/', {
+            replace: true,
+            state: { mensaje: `Inicia sesión con una cuenta de ${rolRequerido} para continuar.` },
+          });
+          return;
+        }
+
         setUserData(value);
         setLoading(false);
-        
-        console.log(value);
-        if(value.rol === 'Revisor') {
-          navigate('/dashboard/revisor/bandeja')
-        }
-        else {
-          navigate('/dashboard/alumno/catalogo')
+
+        const esRaizDelDashboard = location.pathname === '/dashboard' || location.pathname === '/dashboard/';
+
+        if( esRaizDelDashboard ) {
+          navigate(value.rol === 'Revisor' ? '/dashboard/revisor/bandeja' : '/dashboard/alumno/catalogo');
         }
       });
     })
