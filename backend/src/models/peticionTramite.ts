@@ -7,6 +7,18 @@ export default class PeticionTramite {
         const res = await pool.query(QUERY);
         return res || [];
     }
+    public static async obtenerPeticionPorId(id: number): Promise<any | undefined> {
+        const QUERY = `
+            SELECT pt.id, pt.alumno_id, pt.procedimiento_id, pt.estado, pt.fecha_solicitud, pt.firma_id,
+                   p.nombre AS procedimiento_nombre, p.archivo_plantilla
+            FROM peticiones_tramite pt
+            LEFT JOIN procedimientos p ON (pt.procedimiento_id = p.id)
+            WHERE pt.id = '${id}';
+        `;
+        const res = await pool.query(QUERY);
+        if (!res || res.length === 0) return undefined;
+        return res[0];
+    }
     public static async obtenerPeticionesTotales(): Promise<IPeticionTramite[]> {
         const QUERY = `SELECT id, alumno_id, procedimiento_id, estado, fecha_solicitud FROM peticiones_tramite;`;
         const res = await pool.query(QUERY);
@@ -17,10 +29,11 @@ export default class PeticionTramite {
         const QUERY = `INSERT INTO peticiones_tramite (alumno_id, procedimiento_id, estado, fecha_solicitud) VALUES ('${alumno_id}','${procedimiento_id}','En confirmación de pago', '${fecha_solicitud}'):`;
         await pool.query(QUERY);
     }
-    public static async actualizarEstadoPeticion(peticion_id:number, estado_nuevo:EstadoPeticion){
+    public static async actualizarEstadoPeticion(peticion_id:number, estado_nuevo:EstadoPeticion, firma_id?: number){
         // Añadir al historial de cambios
         HistorialEstados.actualizarHistorialPeticion(estado_nuevo, peticion_id);
-        const QUERY = `UPDATE peticiones_tramite SET estado = '${estado_nuevo}' where peticion_id = '${peticion_id}';`;
+        const queryFirma = firma_id !== undefined ? `, firma_id = ${firma_id}` : '';
+        const QUERY = `UPDATE peticiones_tramite SET estado = '${estado_nuevo}'${queryFirma} WHERE id = '${peticion_id}';`;
         await pool.query(QUERY);
     }
 

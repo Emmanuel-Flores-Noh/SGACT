@@ -3,21 +3,94 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { IUsuario } from "../interfaces"
 
-export default async function generarPDF(plantilla: string, alumno: IUsuario, revisor: IUsuario, archivoFirma: string) {
+if (!process.env.OPENSSL_CONF) {
+    process.env.OPENSSL_CONF = '/dev/null';
+}
+
+export interface IGenerarPDFOptions {
+    outputPath?: string;
+    pdfOptions?: PDFOptions['pdfOptions'];
+}
+
+export default async function generarPDF(
+    plantilla: string,
+    alumno: IUsuario,
+    revisor: IUsuario,
+    archivoFirma: string,
+    options?: IGenerarPDFOptions
+) {
     try {
+        const templatePath = path.isAbsolute(plantilla)
+            ? plantilla
+            : path.resolve("./src/templates/", plantilla);
+
+        if (!fs.existsSync(templatePath)) {
+            throw new Error(`No se encontró la plantilla en la ruta: ${templatePath}`);
+        }
+
+        const templateContent = fs.readFileSync(templatePath, 'utf-8');
+
+        const documentsDir = path.resolve("./", 'documents');
+        if (!fs.existsSync(documentsDir)) {
+            fs.mkdirSync(documentsDir, { recursive: true });
+        }
+
+        const nombreCompleto = [alumno.nombres, alumno.apellido_paterno, alumno.apellido_materno]
+            .filter(Boolean)
+            .join(' ');
+        const revisorNombre = [revisor.nombres, revisor.apellido_paterno, revisor.apellido_materno]
+            .filter(Boolean)
+            .join(' ');
+
+        const finalOutputPath = options?.outputPath || path.join(
+            documentsDir,
+            `${alumno.nombres.replace(/\s+/g, '_')}-${Date.now()}.pdf`
+        );
+
+        const escudoPath = path.resolve("./src/templates/", 'escudo-uady.png');
+        let escudoBase64 = '';
+        if (fs.existsSync(escudoPath)) {
+            escudoBase64 = `data:image/png;base64,${fs.readFileSync(escudoPath).toString('base64')}`;
+        }
+
+        const defaultPdfOptions: PDFOptions['pdfOptions'] = {
+            format: 'Letter',
+            border: {
+                top: '0px',
+                bottom: '0px',
+                left: '0px',
+                right: '0px'
+            }
+        };
+
         const pdf = await generatePDF({
-            html: path.join(__dirname, plantilla),
+            html: templateContent,
             data: {
-                alumno: alumno,
-                revisor: revisor,
-                archivoFirma: archivoFirma
+                alumno,
+                revisor,
+                archivoFirma,
+                nombreCompleto,
+                matricula: alumno.matricula || '',
+                carrera: alumno.carrera || 'Licenciatura',
+                fechaActual: new Date().toLocaleDateString('es-MX', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }),
+                revisorNombre,
+                firmaImagen: archivoFirma,
+                escudoBase64
             },
             pdfOptions: {
-
+                ...defaultPdfOptions,
+                ...(options?.pdfOptions || {})
             },
-            path: path.join(__dirname, 'documents', alumno.nombres + "-" + Date.now() + ".pdf")
-        })
-    } catch( error ) {
+            path: finalOutputPath
+        });
+
+        return pdf;
+    } catch (error) {
         throw error;
     }
 }
+

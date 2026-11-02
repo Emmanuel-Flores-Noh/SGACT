@@ -32,17 +32,16 @@ async function crearPeticionTramite(req:Request, res:Response) {
 }
 async function actualizarEstadoPeticion(req:Request, res:Response) {
     const peticion_id = Number(req.params.id);
-    const estado_nuevo = req.body;
-    if (isNaN(peticion_id) || !estado_nuevo) return res.status(400).json({mensaje: "Algunso parametros estan vacios"});
+    const { estado_nuevo, firma_id } = req.body;
+    const estado = typeof req.body === 'string' ? req.body : (estado_nuevo || req.body.estado);
+
+    if (isNaN(peticion_id) || !estado) return res.status(400).json({mensaje: "Algunos parámetros están vacíos"});
     try {
-        await PeticionTramite.actualizarEstadoPeticion(peticion_id,estado_nuevo);
-        res.status(201).json({mensaje: "Tramite de peticion actualizado con exito"});
-
+        await PeticionTramite.actualizarEstadoPeticion(peticion_id, estado, firma_id);
+        res.status(200).json({mensaje: "Trámite de petición actualizado con éxito"});
     } catch (error) {
-        res.status(500).json({mensaje: "Error al actualizar tramite de peticion"});
+        res.status(500).json({mensaje: "Error al actualizar trámite de petición"});
     }
-
-    
 }
 export{
     obtenerPeticionAlumno,
