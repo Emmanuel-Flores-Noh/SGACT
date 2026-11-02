@@ -4,7 +4,6 @@ import { getUserData } from "../../api/usuario"
 import { obtenerPeticionesAlumno, PeticionTramite } from "../../api/peticiones"
 import { obtenerProcedimientos, Procedimiento } from "../../api/procedimientos"
 import { Button, LoadingScreen, StatusBadge } from "../../components"
-import type { Usuario } from "../../api/usuario"
 
 type Carga =
   | { estado: 'cargando' }
@@ -40,7 +39,6 @@ export default function Historial(): React.JSX.Element {
         throw new Error('No se pudo obtener el usuario');
       }
 
-      const usuario: Usuario = await respuestaUsuario.json();
       const [peticiones, procedimientos] = await Promise.all([
         obtenerPeticionesAlumno(),
         obtenerProcedimientos(),

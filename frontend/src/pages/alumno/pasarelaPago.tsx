@@ -132,10 +132,15 @@ export default function PasarelaPago(): React.JSX.Element {
       setConfirmacion(resultado);
     } catch (error) {
       if (error instanceof ErrorPago && error.status === 403) {
+        /*
         navigate('/', {
           replace: true,
           state: { mensaje: 'Inicia sesión con una cuenta de alumno para continuar.' },
         });
+        */
+       console.log("Esto por algun motivo falla");
+       console.log(error.message)
+       
         return;
       }
 

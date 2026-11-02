@@ -18,7 +18,7 @@ export default class Usuario {
     }
     
     public static async obtenerUsuarioPorCorreo(correo: String): Promise<undefined | IUsuario> {
-        const QUERY = `SELECT * FROM usuarios WHERE correo = '${correo}';`;
+        const QUERY = `SELECT usuarios.*, roles.nombre AS rol FROM usuarios INNER JOIN roles ON (usuarios.rol_id = roles.id) WHERE correo = "${correo}";`;
         const res: Array<IUsuario> | undefined = await pool.query(QUERY);
         
         if( res === undefined || res.length == 0) {

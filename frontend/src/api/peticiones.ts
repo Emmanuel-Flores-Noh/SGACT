@@ -16,7 +16,7 @@ export async function obtenerPeticionesAlumno(): Promise<PeticionTramite[]> {
   }
 
   return res.json();
-import { POST } from "./apiConnection";
+}
 
 export async function actualizarEstadoPeticion(peticionId: number, estado: string, firmaId?: number) {
     const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/api/peticiones/${peticionId}/estado`, {
