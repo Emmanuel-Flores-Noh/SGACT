@@ -4,6 +4,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.19.0",
+    "@types/html-pdf-node": "^1.0.3",
     "@types/http-status-codes": "^1.2.0",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",

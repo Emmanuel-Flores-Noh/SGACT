@@ -1,4 +1,4 @@
-import { GET } from './apiConnection';
+import { GET, PUT } from './apiConnection';
 
 export interface PeticionTramite {
   id: number;
@@ -19,17 +19,10 @@ export async function obtenerPeticionesAlumno(): Promise<PeticionTramite[]> {
 }
 
 export async function actualizarEstadoPeticion(peticionId: number, estado: string, firmaId?: number) {
-    const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/api/peticiones/${peticionId}/estado`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            estado_nuevo: estado,
-            firma_id: firmaId
-        }),
-        credentials: "include"
-    });
+    const res = await PUT(`/api/peticiones/${peticionId}/estado`, {
+        estado_nuevo: estado,
+        firma_id: firmaId
+    })
 
     if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
