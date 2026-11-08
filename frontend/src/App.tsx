@@ -21,12 +21,13 @@ export default function App(): React.JSX.Element {
           <Route path="historial" element={<Historial />} />
         </Route>
         <Route path="revisor">
-          <Route path="bandeja" />
+          <Route path="bandeja">
+            <Route path=":peticionId" element={<Peticion />}/>
+          </ Route>
           <Route path="historial" />
         </Route>
       </Route>
 
-      <Route path="/revisor/atender-peticion" element={<Peticion />}/>
     </Routes>
   );
 }

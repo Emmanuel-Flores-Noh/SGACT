@@ -12,7 +12,6 @@ import pasarelaRoutes from './routes/pasarela.routes';
 import verificarAuth from './middlewares/verificarAuth';
 import verificarPermisoPeticion from './middlewares/verificarPermisoPeticion';
 import firmasRevisor from './routes/firmasRevisor.routes';
-import verificarAuth from './middlewares/verificarAuth';
 import verificarRevisor from './middlewares/verificarRevisor';
 
 const app = express();
@@ -44,8 +43,7 @@ app.use('/api/procedimientos', procedimientoRoutes)
 app.use('/api/peticiones',  peticionesTramite)
 app.use('/api/historial', historialPeticiones)
 app.use('/api/pasarela', verificarAuth, pasarelaRoutes)
-app.use('/api/firmas', verificarAuth, verificarRevisor)
-app.use('/api/firmas', firmasRevisor)
+app.use('/api/firmas', verificarAuth, verificarRevisor, firmasRevisor);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

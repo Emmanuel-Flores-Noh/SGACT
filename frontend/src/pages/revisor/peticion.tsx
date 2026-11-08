@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import CanvasFirma, { CanvasFirmaRef } from "./canvasFirma";
 import PreviewDoc from "./previewDoc";
 import { obtenerPreviewDocumento } from "../../api/preview";
@@ -9,13 +9,16 @@ import { Button, ModalConfirmacionFirma, Alert } from "../../components";
 import { IoArrowBack, IoCheckmarkCircleOutline } from "react-icons/io5";
 
 export default function Peticion(): React.JSX.Element {
-    const [searchParams] = useSearchParams();
+    let params = useParams();  
     const navigate = useNavigate();
     const canvasRef = useRef<CanvasFirmaRef>(null);
 
-    // Obtener id de la petición si viene por query string ej. ?id=1 o ?peticion_id=1
-    const peticionIdParam = searchParams.get("id") || searchParams.get("peticion_id");
-    const peticionId = peticionIdParam ? Number(peticionIdParam) : 1;
+    const peticionId = Number.parseInt(params.peticionId ?? "-1");
+    
+    if( peticionId === -1 ) {
+        navigate('/dashboard/revisor/bandeja');
+        return <></>;
+    }
 
     // Estados de preview
     const [imagenDoc, setImagenDoc] = useState<string | null>(null);
@@ -151,6 +154,7 @@ export default function Peticion(): React.JSX.Element {
             setIsModalOpen(false);
         } finally {
             setAprobando(false);
+            navigate("/dashboard/revisor/bandeja");
         }
     }
 

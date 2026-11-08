@@ -112,17 +112,29 @@ async function obtenerPeticionID(req: Request, res: Response) {
         return res.status(StatusCodes.OK).json(peticion);
     } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensaje: "Proceso fallido: Error al obtener el detalle de la petición" });
-async function actualizarEstadoPeticion(req:Request, res:Response) {
+    }
+}
+
+async function actualizarEstadoPeticion(req: Request, res: Response) {
+    if (!req.session.usuarioId) {
+        return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: No ha iniciado sesión" });
+    }
+
+    const esRevisor = await Usuario.comprobarRevisor(Number(req.session.usuarioId));
+    if (!esRevisor) {
+        return res.status(StatusCodes.FORBIDDEN).json({ mensaje: "Sin acceso: Usted no tiene autorización para realizar cambios" });
+    }
+
     const peticion_id = Number(req.params.id);
     const { estado_nuevo, firma_id } = req.body;
     const estado = typeof req.body === 'string' ? req.body : (estado_nuevo || req.body.estado);
 
-    if (isNaN(peticion_id) || !estado) return res.status(400).json({mensaje: "Algunos parámetros están vacíos"});
+    if (isNaN(peticion_id) || !estado) return res.status(StatusCodes.BAD_REQUEST).json({ mensaje: "Algunos parámetros están vacíos" });
     try {
-        await PeticionTramite.actualizarEstadoPeticion(peticion_id, estado, firma_id);
-        res.status(200).json({mensaje: "Trámite de petición actualizado con éxito"});
+        await PeticionTramite.actualizarEstadoPeticion(peticion_id, estado, firma_id ? Number(firma_id) : undefined);
+        return res.status(StatusCodes.OK).json({ mensaje: "Trámite de petición actualizado con éxito" });
     } catch (error) {
-        res.status(500).json({mensaje: "Error al actualizar trámite de petición"});
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensaje: "Error al actualizar trámite de petición" });
     }
 }
 
@@ -130,5 +142,6 @@ export {
     obtenerPeticiones,
     crearPeticion,
     actualizarPeticion,
-    obtenerPeticionID
+    obtenerPeticionID,
+    actualizarEstadoPeticion
 };

@@ -2,119 +2,111 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import * as fs from "fs";
 import * as path from "path";
-import { exec } from "child_process";
-import { promisify } from "util";
 import PeticionTramite from "../models/peticionTramite";
 import Usuario from "../models/usuario";
 import generarPDF from "../services/generarPDF";
-
-const execAsync = promisify(exec);
+import Procedimiento from "../models/procedimiento";
+import { pdfToPng } from "pdf-to-png-converter"
 
 export async function previsualizarDocumento(req: Request, res: Response) {
+    const { firmaBase64 } = req.body;
+    const tramite_id= Number(req.params.id);
+
+    if( tramite_id === undefined ) {
+        res.status(StatusCodes.BAD_REQUEST).json({mensaje: "No se ha especificado el id del procedimiento"});
+        return;
+    }
+    
+    const tramite = await PeticionTramite.obtenerPeticionPorId(tramite_id);
+    
+    if( tramite === undefined ) {
+        res.status(StatusCodes.BAD_REQUEST).json({mensaje: "No existe el id del procedimiento en la base de datos"});
+        return;
+    }
+
+    if( tramite.estado === "Finalizado" || tramite.estado === "Archivado" ) {
+        res.status(StatusCodes.BAD_REQUEST).json({mensaje: "El tramite esta finalizado o archivado"});
+        return;
+    }
+    
+    const procedimiento = await Procedimiento.obtenerPorId(tramite.procedimiento_id);
+    
+    if( procedimiento === undefined ) {
+        res.status(StatusCodes.BAD_REQUEST).json({mensaje: "El procedimiento no se encuentra en la base de datos"});
+        return;
+    }
+    
+    const plantilla = procedimiento.archivo_plantilla;
+
+    const alumno = await Usuario.obtenerUsuarioPorId(tramite.alumno_id);
+    /* @ts-ignore Middleware! */
+    const revisor = await Usuario.obtenerUsuarioPorId(req.session.usuarioId);
+    
+
+    if( alumno === undefined ) {
+        res.status(StatusCodes.BAD_REQUEST).json({mensaje: "no se encuentra el alumno en la base de datos"});
+        return;
+    }
+    
+    if( revisor === undefined ) {
+        res.status(StatusCodes.BAD_REQUEST).json({mensaje: "no se encuentra el revisor en la base de datos"});
+        return;
+    }
+    
+    const nombreArchivo = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}`; 
+    const tmpFolder = path.resolve("./tmp");
+    
+    if ( ! fs.existsSync(tmpFolder) ) {
+        fs.mkdirSync(tmpFolder);
+    }
+
+    const pdfFile = path.join(tmpFolder, nombreArchivo + ".pdf");
+    const pngFolder = path.join(tmpFolder, nombreArchivo + "/")
+    const pngFile = path.join(pngFolder, "1.png")
+
     try {
-        const peticionId = Number(req.params.id);
-        const { firmaBase64 } = req.body; // Imagen de firma opcional (base64 o string data-uri)
-
-        // @ts-ignore
-        const revisorId = req.session.usuarioId;
-
-        // Validar petición
-        let alumno: any;
-        let plantilla = "../templates/constancia.hbs";
-
-        if (!isNaN(peticionId) && peticionId > 0) {
-            const peticion = await PeticionTramite.obtenerPeticionPorId(peticionId);
-            if (peticion) {
-                alumno = await Usuario.obtenerUsuarioPorId(peticion.alumno_id);
-                if (peticion.archivo_plantilla) {
-                    plantilla = `../templates/${peticion.archivo_plantilla}`;
-                }
-            }
-        }
-
-        // Si no se encontró alumno o no se pasó ID válida, usar mock institucional
-        if (!alumno) {
-            alumno = {
-                id: 0,
-                matricula: "A20203669",
-                correo: "alumno@alumnos.uady.mx",
-                nombres: "Emmanuel Adrián",
-                apellido_paterno: "Flores",
-                apellido_materno: "Noh",
-                password: "",
-                rol: "Alumno",
-                carrera: "Licenciatura en Ingeniería de Software"
-            };
-        }
-
-        // Revisor autenticado o fallback
-        let revisor: any;
-        if (revisorId) {
-            revisor = await Usuario.obtenerUsuarioPorId(revisorId);
-        }
-        if (!revisor) {
-            revisor = {
-                id: 2,
-                matricula: undefined,
-                correo: "control.escolar@uady.mx",
-                nombres: "Dra. Patricia",
-                apellido_paterno: "Mendoza",
-                apellido_materno: "Canul",
-                password: "",
-                rol: "Revisor",
-                carrera: undefined
-            };
-        }
-
-        const randomSuffix = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-        const tmpDir = path.resolve(__dirname, "../../documents");
-        if (!fs.existsSync(tmpDir)) {
-            fs.mkdirSync(tmpDir, { recursive: true });
-        }
-
-        const tempPdfPath = path.join(tmpDir, `preview_${randomSuffix}.pdf`);
-        const tempImgPrefix = path.join(tmpDir, `preview_img_${randomSuffix}`);
-        const finalImgPath = `${tempImgPrefix}.png`;
-
-        // Generar PDF
-        await generarPDF(plantilla, alumno, revisor, firmaBase64 || "", {
-            outputPath: tempPdfPath
+        await generarPDF(plantilla, alumno, revisor, firmaBase64, {
+            outputPath: pdfFile
         });
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({mensaje: "Error al generar el archivo pdf"})
+        console.log(error)
+        return;
+    }
+    
 
-        // Convertir primera página a PNG con pdftoppm
-        await execAsync(`pdftoppm -png -r 150 -singlefile "${tempPdfPath}" "${tempImgPrefix}"`);
+    try {
+        await pdfToPng(pdfFile, {
+            pagesToProcess: [1],
+            outputFolder: pngFolder,
+            outputFileMaskFunc: (pageNumber) => `${pageNumber}.png`
+        })
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({mensaje: "Error al generar la imagen apartir del pdf"})
+        console.log(error);
+        return;
+    }
 
-        // Leer la imagen y enviarla en base64
-        if (fs.existsSync(finalImgPath)) {
-            const imgBuffer = fs.readFileSync(finalImgPath);
-            const base64Image = `data:image/png;base64,${imgBuffer.toString("base64")}`;
+    if (fs.existsSync(pngFile)) {
+        const imgBuffer = fs.readFileSync(pngFile);
+        const base64Image = `data:image/png;base64,${imgBuffer.toString("base64")}`;
 
-            // Limpieza de archivos temporales
-            try {
-                if (fs.existsSync(tempPdfPath)) fs.unlinkSync(tempPdfPath);
-                if (fs.existsSync(finalImgPath)) fs.unlinkSync(finalImgPath);
-            } catch (cleanupErr) {
-                console.error("Error al limpiar archivos temporales de preview:", cleanupErr);
+        res.status(StatusCodes.OK).json({
+            imagen: base64Image,
+            alumno: {
+                nombreCompleto: [alumno.nombres, alumno.apellido_paterno, alumno.apellido_materno].filter(Boolean).join(" "),
+                matricula: alumno.matricula,
+                carrera: alumno.carrera
             }
-
-            return res.status(StatusCodes.OK).json({
-                imagen: base64Image,
-                alumno: {
-                    nombreCompleto: [alumno.nombres, alumno.apellido_paterno, alumno.apellido_materno].filter(Boolean).join(" "),
-                    matricula: alumno.matricula,
-                    carrera: alumno.carrera
-                }
-            });
-        } else {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                mensaje: "No se pudo generar la imagen del documento"
-            });
-        }
-    } catch (error: any) {
-        console.error("Error en previsualizarDocumento:", error);
+        });
+        
+        fs.unlinkSync(pngFile)
+        fs.rmdirSync(pngFolder)
+        fs.unlinkSync(pdfFile)
+    }
+    else {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            mensaje: "Error al previsualizar el documento",
-            error: error.message
+            mensaje: "No se pudo generar la imagen del documento"
         });
     }
 }

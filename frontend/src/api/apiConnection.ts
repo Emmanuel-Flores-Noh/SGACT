@@ -18,8 +18,20 @@ async function GET(endpoint: string): Promise<Response> {
     })
 }
 
+async function PUT(endpoint: string, jsonData: Object): Promise<Response> {
+    return fetch(`${API_URL}${endpoint}`, {
+        body: JSON.stringify(jsonData),
+        headers: {
+            "Content-Type": "application/json",
+        },
+        method: 'PUT',
+        credentials: "include"
+    })
+}
+
 export {
     GET,
     POST,
+    PUT,
     API_URL
 };

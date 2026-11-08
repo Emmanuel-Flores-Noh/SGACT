@@ -1,7 +1,8 @@
-import { generatePDF, PDFOptions } from "pdf-node"
-import * as fs from 'fs'
-import * as path from 'path'
-import { IUsuario } from "../interfaces"
+import * as fs from 'fs';
+import * as path from 'path';
+import handlebars from 'handlebars';
+import pdf from 'html-pdf-node';
+import { IUsuario } from "../interfaces";
 
 if (!process.env.OPENSSL_CONF) {
     process.env.OPENSSL_CONF = '/dev/null';
@@ -9,7 +10,7 @@ if (!process.env.OPENSSL_CONF) {
 
 export interface IGenerarPDFOptions {
     outputPath?: string;
-    pdfOptions?: PDFOptions['pdfOptions'];
+    pdfOptions?: Record<string, any>;
 }
 
 export default async function generarPDF(
@@ -53,44 +54,50 @@ export default async function generarPDF(
             escudoBase64 = `data:image/png;base64,${fs.readFileSync(escudoPath).toString('base64')}`;
         }
 
-        const defaultPdfOptions: PDFOptions['pdfOptions'] = {
+        // 1. Compilar la plantilla HTML inyectando las variables
+        const template = handlebars.compile(templateContent);
+        const htmlFinal = template({
+            alumno,
+            revisor,
+            archivoFirma,
+            nombreCompleto,
+            matricula: alumno.matricula || '',
+            carrera: alumno.carrera || 'Licenciatura',
+            fechaActual: new Date().toLocaleDateString('es-MX', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }),
+            revisorNombre,
+            firmaImagen: archivoFirma,
+            escudoBase64
+        });
+
+        // 2. Opciones de configuración de Puppeteer (html-pdf-node)
+        const defaultPdfOptions = {
             format: 'Letter',
-            border: {
+            path: finalOutputPath, // Indica a la librería que guarde el archivo físico en esta ruta
+            margin: {              // En Puppeteer/html-pdf-node se utiliza 'margin', no 'border'
                 top: '0px',
                 bottom: '0px',
                 left: '0px',
                 right: '0px'
-            }
+            },
+            printBackground: true
         };
 
-        const pdf = await generatePDF({
-            html: templateContent,
-            data: {
-                alumno,
-                revisor,
-                archivoFirma,
-                nombreCompleto,
-                matricula: alumno.matricula || '',
-                carrera: alumno.carrera || 'Licenciatura',
-                fechaActual: new Date().toLocaleDateString('es-MX', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                }),
-                revisorNombre,
-                firmaImagen: archivoFirma,
-                escudoBase64
-            },
-            pdfOptions: {
-                ...defaultPdfOptions,
-                ...(options?.pdfOptions || {})
-            },
-            path: finalOutputPath
-        });
+        const finalPdfOptions = {
+            ...defaultPdfOptions,
+            ...(options?.pdfOptions || {})
+        };
 
-        return pdf;
+        const file = { content: htmlFinal };
+
+        // 3. Generar el PDF y retornar el buffer
+        const pdfBuffer = await pdf.generatePdf(file, finalPdfOptions);
+
+        return pdfBuffer;
     } catch (error) {
         throw error;
     }
 }
-
