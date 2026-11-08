@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Constancia de Estudios - SGACT</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Open Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            color: #1f2933; /* --tinta */
+            background-color: #ffffff;
+            font-size: 13px;
+            line-height: 1.55;
+            padding: 18px 24px;
+        }
+
+        /* Marco institucional exterior */
+        .page-container {
+            border: 2px solid #01457C; /* --color-azul-institucional */
+            border-radius: 12px; /* --radio */
+            padding: 22px 26px 16px 26px;
+            position: relative;
+            background-color: #ffffff;
+        }
+
+        /* Franja decorativa dorada superior */
+        .page-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background-color: #C99213; /* --color-dorado-encabezado */
+            border-radius: 2px;
+        }
+
+        /* Encabezado */
+        .header {
+            display: table;
+            width: 100%;
+            border-bottom: 1.5px solid #d9dde2; /* --gris-200 */
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .header-logo-cell {
+            display: table-cell;
+            width: 75px;
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        .header-logo {
+            max-width: 68px;
+            height: auto;
+            display: block;
+        }
+
+        .header-text-cell {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            padding-right: 68px; /* Compensa el logo para centrado simétrico */
+        }
+
+        .header-title-univ {
+            font-size: 15px;
+            font-weight: 800;
+            color: #01457C; /* --color-azul-institucional */
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle-fac {
+            font-size: 13px;
+            font-weight: 700;
+            color: #00437C; /* --color-azul-texto */
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .header-dep {
+            font-size: 11px;
+            font-weight: 600;
+            color: #636b75; /* --gris-500 */
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Banner del tipo de documento */
+        .doc-badge-container {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .doc-badge {
+            display: inline-block;
+            background-color: #eef0f3; /* --gris-100 */
+            color: #01457C; /* --color-azul-institucional */
+            border-left: 4px solid #C99213; /* --color-dorado-encabezado */
+            padding: 5px 18px;
+            font-size: 12.5px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        /* Saludo y párrafos */
+        .saludo {
+            font-size: 13px;
+            font-weight: 700;
+            color: #00437C; /* --color-azul-texto */
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .parrafo {
+            margin-bottom: 12px;
+            text-align: justify;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #1f2933; /* --tinta */
+        }
+
+        /* Tarjeta de datos del estudiante */
+        .card-datos {
+            background-color: #f7f8fa; /* --gris-050 */
+            border: 1px solid #d9dde2; /* --gris-200 */
+            border-left: 4px solid #01457C; /* --color-azul-institucional */
+            border-radius: 8px; /* --radio-sm */
+            padding: 10px 16px;
+            margin: 12px 0 14px 0;
+        }
+
+        .datos-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .datos-table td {
+            padding: 2.5px 0;
+            font-size: 12.5px;
+        }
+
+        .datos-label {
+            width: 110px;
+            font-weight: 700;
+            color: #3d4550; /* --gris-700 */
+            text-transform: uppercase;
+            font-size: 10.5px;
+            letter-spacing: 0.5px;
+        }
+
+        .datos-value {
+            font-weight: 600;
+            color: #01457C; /* --color-azul-institucional */
+        }
+
+        /* Firma autorizada */
+        .seccion-firma {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .firma-imagen-wrapper {
+            height: 55px;
+            margin-bottom: 2px;
+        }
+
+        .firma-imagen {
+            max-height: 55px;
+            max-width: 170px;
+            display: inline-block;
+        }
+
+        .firma-linea {
+            border-top: 1.5px solid #01457C; /* --color-azul-institucional */
+            width: 220px;
+            margin: 0 auto 5px auto;
+        }
+
+        .firma-nombre {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #00437C; /* --color-azul-texto */
+        }
+
+        .firma-cargo {
+            font-size: 11px;
+            color: #636b75; /* --gris-500 */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        /* Pie de página institucional */
+        .footer-institucional {
+            border-top: 1px solid #d9dde2; /* --gris-200 */
+            padding-top: 8px;
+            margin-top: 20px;
+            display: table;
+            width: 100%;
+        }
+
+        .footer-left {
+            display: table-cell;
+            text-align: left;
+            font-size: 9.5px;
+            color: #636b75; /* --gris-500 */
+            vertical-align: middle;
+        }
+
+        .footer-right {
+            display: table-cell;
+            text-align: right;
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #01457C; /* --color-azul-institucional */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Encabezado con Escudo y Títulos -->
+        <div class="header">
+            <div class="header-logo-cell">
+                {{#if escudoBase64}}
+                    <img src="{{escudoBase64}}" alt="Escudo UADY" class="header-logo">
+                {{/if}}
+            </div>
+            <div class="header-text-cell">
+                <div class="header-title-univ">Universidad Autónoma de Yucatán</div>
+                <div class="header-subtitle-fac">Facultad de Matemáticas</div>
+                <div class="header-dep">Coordinación de Control Escolar</div>
+            </div>
+        </div>
+
+        <!-- Título del documento con acento dorado -->
+        <div class="doc-badge-container">
+            <div class="doc-badge">Constancia Oficial de Estudios</div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="content">
+            <div class="saludo">A quien corresponda:</div>
+
+            <p class="parrafo">
+                La que suscribe, a través de la Coordinación de Control Escolar de la Facultad de Matemáticas de la Universidad Autónoma de Yucatán, hace constar formalmente que el/la alumno(a):
+            </p>
+
+            <div class="card-datos">
+                <table class="datos-table">
+                    <tr>
+                        <td class="datos-label">Estudiante:</td>
+                        <td class="datos-value">{{nombreCompleto}}</td>
+                    </tr>
+                    <tr>
+                        <td class="datos-label">Matrícula:</td>
+                        <td class="datos-value">{{matricula}}</td>
+                    </tr>
+                    <tr>
+                        <td class="datos-label">Programa:</td>
+                        <td class="datos-value">{{carrera}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <p class="parrafo">
+                Se encuentra actualmente inscrito(a) y activo(a) como estudiante regular del programa académico citado, cursando las asignaturas correspondientes al ciclo escolar vigente en conformidad con el reglamento general de inscripciones de esta casa de estudios.
+            </p>
+
+            <p class="parrafo">
+                A petición de la parte interesada y para los fines legales y administrativos que al interesado convengan, se extiende la presente constancia oficial en la ciudad de Mérida, Yucatán, a <b>{{fechaActual}}</b>.
+            </p>
+        </div>
+
+        <!-- Firma digitalizada y validador -->
+        <div class="seccion-firma">
+            <div class="firma-imagen-wrapper">
+                {{#if firmaImagen}}
+                    <img src="{{firmaImagen}}" alt="Firma Autorizada" class="firma-imagen">
+                {{/if}}
+            </div>
+            <div class="firma-linea"></div>
+            <div class="firma-nombre">{{revisorNombre}}</div>
+            <div class="firma-cargo">Control Escolar · Facultad de Matemáticas</div>
+        </div>
+
+        <!-- Pie institucional -->
+        <div class="footer-institucional">
+            <div class="footer-left">
+                Documento oficial generado electrónicamente a través de SGACT.
+            </div>
+            <div class="footer-right">
+                UADY · Facultad de Matemáticas
+            </div>
+        </div>
+    </div>
+</body>
+</html>

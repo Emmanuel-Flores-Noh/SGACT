@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS procedimientos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50),
     descripcion VARCHAR(200),
+    archivo_plantilla VARCHAR(100),
     costo FLOAT,
     vigencia_meses INT
 );
@@ -35,8 +36,7 @@ CREATE TABLE IF NOT EXISTS procedimientos (
 CREATE TABLE IF NOT EXISTS firmas_revisores (
     id INT AUTO_INCREMENT PRIMARY KEY,
     revisor_id INT,
-    tipo_firma VARCHAR(20),
-    ruta_archivo VARCHAR(50),
+    nombre_archivo VARCHAR(50),
     preconfigurada BOOLEAN,
     CONSTRAINT fk_revisor_firma FOREIGN KEY (revisor_id) REFERENCES usuarios(id)
 );
@@ -47,6 +47,8 @@ CREATE TABLE IF NOT EXISTS peticiones_tramite (
     procedimiento_id INT,
     estado VARCHAR(50),
     fecha_solicitud DATETIME,
+    firma_id INT,
+    CONSTRAINT fk_firma_id FOREIGN KEY ( firma_id ) REFERENCES firmas_revisores(id),
     CONSTRAINT fk_peticion_alumno FOREIGN KEY (alumno_id) REFERENCES usuarios(id),
     CONSTRAINT fk_peticion_procedimiento FOREIGN KEY (procedimiento_id) REFERENCES procedimientos(id)
 );
@@ -68,4 +70,11 @@ CREATE TABLE IF NOT EXISTS historial_estados (
     estado_nuevo VARCHAR(50),
     fecha DATETIME,
     CONSTRAINT fk_historial_peticion FOREIGN KEY (peticion_id) REFERENCES peticiones_tramite(id)
+);
+
+/* Tabla para almacenar los pdf de la base de datos, se eliminan en una hora sincrona. */
+CREATE TABLE IF NOT EXISTS cache_documentos (
+    tramite_id INT,
+    nombre_archivo VARCHAR(80),
+    CONSTRAINT fk_tramite_id FOREIGN KEY ( tramite_id ) REFERENCES peticiones_tramite(id)
 );

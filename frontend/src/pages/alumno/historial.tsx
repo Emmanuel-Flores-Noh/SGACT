@@ -42,7 +42,7 @@ export default function Historial(): React.JSX.Element {
 
       const usuario: Usuario = await respuestaUsuario.json();
       const [peticiones, procedimientos] = await Promise.all([
-        obtenerPeticionesAlumno(usuario.id),
+        obtenerPeticionesAlumno(),
         obtenerProcedimientos(),
       ]);
 
