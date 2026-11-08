@@ -11,6 +11,8 @@ if (!process.env.OPENSSL_CONF) {
 export interface IGenerarPDFOptions {
     outputPath?: string;
     pdfOptions?: Record<string, any>;
+    /** Fecha impresa en la constancia; por omisión, la fecha actual */
+    fechaEmision?: Date;
 }
 
 export default async function generarPDF(
@@ -63,7 +65,7 @@ export default async function generarPDF(
             nombreCompleto,
             matricula: alumno.matricula || '',
             carrera: alumno.carrera || 'Licenciatura',
-            fechaActual: new Date().toLocaleDateString('es-MX', {
+            fechaActual: (options?.fechaEmision ?? new Date()).toLocaleDateString('es-MX', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'

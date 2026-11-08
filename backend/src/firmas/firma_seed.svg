@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120" viewBox="0 0 400 120">
+  <!-- Firma de ejemplo para los trámites "Finalizado" de database/seed.sql. No es una firma real. -->
+  <path d="M20 85 C40 30 60 20 70 45 S65 95 85 80 S120 30 135 55 S140 90 160 70 C175 55 185 40 195 62 S215 88 230 60 C240 42 250 50 255 66 S275 85 300 55 C315 38 330 45 345 58 S370 70 385 48"
+        fill="none" stroke="#1f2933" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 98 C140 92 260 96 360 88" fill="none" stroke="#1f2933" stroke-width="2" stroke-linecap="round"/>
+</svg>

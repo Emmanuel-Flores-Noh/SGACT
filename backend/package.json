@@ -7,7 +7,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
-    "test:pdf": "tsx test/generarPDF.test.ts"
+    "test:pdf": "tsx test/generarPDF.test.ts",
+    "test:documento": "tsx test/descargarDocumento.test.ts"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",

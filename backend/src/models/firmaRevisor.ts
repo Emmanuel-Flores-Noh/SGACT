@@ -16,6 +16,17 @@ export default class firma_revisor {
         return res[0].nombre_archivo;
     }
     
+    public static async obtenerFirmaPorId(firma_id: number): Promise<IFirmaRevisor | undefined> {
+        const QUERY = `SELECT id, revisor_id, nombre_archivo, preconfigurada FROM firmas_revisores WHERE id = ?;`;
+        const res: Array<IFirmaRevisor> = await pool.query(QUERY, [firma_id]);
+
+        if( res.length === 0 ) {
+            return undefined;
+        }
+
+        return res[0];
+    }
+
     public static async agregarFirma(revisor_id: number, nombre_archivo: string, preconfigurada: boolean) {
         const QUERY = `INSERT INTO firmas_revisores( revisor_id, nombre_archivo, preconfigurada  ) VALUES (${revisor_id}, '${nombre_archivo}', ${preconfigurada});`;
         
