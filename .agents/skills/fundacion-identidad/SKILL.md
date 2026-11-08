@@ -76,13 +76,13 @@ token de acento con nombre semántico y se anota aquí.
 
 El eje que separa los roles es si el trámite ya tiene un veredicto:
 
-| Significado | Tokens | Estados del SGACT |
+| Significado | Texto · fondo · borde | Estados del SGACT |
 | --- | --- | --- |
-| Éxito / concluido | `--ok-600` texto, `--ok-050` fondo, `--ok-200` borde | **Finalizado** (constancia firmada, descarga habilitada) |
-| Error / rechazado | `--err-600`, `--err-050`, `--err-200` | Pago rechazado, validación de formulario |
-| **Sin veredicto todavía** | `--azul-600`, `--azul-100` | **En confirmación de pago**, **En trámite** |
-| Atención — hay un plazo encima | `--warn-600`, `--warn-050`, `--warn-200` | Constancia próxima a archivarse, dato faltante |
-| Inactivo | `--gris-500` texto, `--gris-100` fondo | **Archivado** (archivo eliminado, sin descarga) |
+| Éxito / concluido | `--ok-600` `#1b6d32` · `--ok-050` `#edf8f0` · `--ok-200` `#a3e0b2` | **Finalizado** (constancia firmada, descarga habilitada) |
+| Error / rechazado | `--err-600` `#a91b1b` · `--err-050` `#fdf2f2` · `--err-200` `#f5b3b3` | Pago rechazado, validación de formulario |
+| **Sin veredicto todavía** | `--azul-600` `#0a5fa8` · `--azul-050` `#edf5fc` · `--azul-200` `#b5d5f5` | **En confirmación de pago**, **En trámite** |
+| Atención — hay un plazo encima | `--warn-600` `#8a5300` · `--warn-050` `#fef8ec` · `--warn-200` `#f7d594` | Constancia próxima a archivarse, dato faltante |
+| Inactivo | `--gris-500` · `--gris-100` · `--gris-200` (neutros, §1) | **Archivado** (archivo eliminado, sin descarga) |
 
 > [!warning] «En trámite» es azul, no ámbar
 > El ámbar dice *se pasó o está por pasarse un plazo*; el azul dice *todavía no hay
@@ -92,14 +92,15 @@ El eje que separa los roles es si el trámite ya tiene un veredicto:
 > El `--azul-600` **no es el azul de identidad** (`#01457C`, §1). Son dos azules con dos
 > trabajos: uno es identidad, el otro es estado.
 
-Los tokens de estado aún no tienen valor: se definen en el tema la primera vez que una pantalla
-los necesite, se miden (§5) y se anotan en esta tabla.
+Los valores están definidos en el tema (§6) y medidos (§5). Un rol nuevo se añade aquí con sus
+tres tokens y su medición en el mismo cambio.
 
 Regla: **un estado nunca se comunica solo con color.** Siempre color + texto (y en tablas,
 además, posición o ícono).
 
 El mapeo de cada estado del trámite del backend a uno de estos roles vive en **un solo lugar**
-del frontend (un componente `Badge` o una tabla compartida), no repartido por pantallas.
+del frontend: el componente `Badge` (`frontend/src/components/ui/Badge.tsx`). Un estado nuevo
+se añade a su tabla, no se colorea en la pantalla que lo usa.
 
 ## 5. Contraste
 
@@ -120,6 +121,26 @@ anillo de foco.
 Al definir los tokens de estado, mide cada pareja texto/fondo al tamaño del distintivo. Si no
 alcanza AA, **decide una vez** (subir el tamaño o ajustar el tono en el tema) y anótalo aquí; no
 lo arregles componente por componente.
+
+### Medición de los tokens de estado
+
+Fórmula de luminancia relativa de WCAG 2.x, 2026-11-07. El `Badge` usa texto de 12px/600, así
+que cada pareja texto/fondo necesita **4.5:1**.
+
+| Rol | Texto / fondo | Texto / blanco | Borde / fondo |
+| --- | --- | --- | --- |
+| Éxito (`ok`) | 5.88 ✓ | 6.40 ✓ | 1.39 |
+| Error (`err`) | 6.70 ✓ | 7.34 ✓ | 1.60 |
+| Sin veredicto (`azul`) | 5.93 ✓ | 6.53 ✓ | 1.38 |
+| Atención (`warn`) | 5.98 ✓ | 6.33 ✓ | 1.33 |
+| Inactivo (`gris-500` / `gris-100`) | 4.73 ✓ (justo) | 5.40 ✓ | 1.20 |
+
+- Todas las parejas de texto pasan AA sin ajustar tamaño ni tono.
+- El borde de estado (`--*-200`) queda **por debajo de 3:1 a propósito: es decorativo**. El
+  estado lo comunican el texto y su color; el borde no puede ser la única señal, ni marcar un
+  control (para eso, `--gris-300`).
+- Inactivo es el más justo: no aclares `--gris-500` ni oscurezcas `--gris-100` sin volver a
+  medir.
 
 No se juzga a ojo: mide con una herramienta de contraste (las DevTools del navegador o axe) en
 la pantalla real.

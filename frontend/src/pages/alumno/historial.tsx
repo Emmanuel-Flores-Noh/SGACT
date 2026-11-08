@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { getUserData } from "../../api/usuario"
 import { obtenerPeticionesAlumno, PeticionTramite } from "../../api/peticiones"
 import { obtenerProcedimientos, Procedimiento } from "../../api/procedimientos"
-import { Button, LoadingScreen, StatusBadge } from "../../components"
+import { Button, LoadingScreen, Badge } from "../../components"
 
 type Carga =
   | { estado: 'cargando' }
@@ -107,7 +107,7 @@ export default function Historial(): React.JSX.Element {
                     Solicitado el {formatearFecha(peticion.fecha_solicitud)}
                   </p>
                 </div>
-                <StatusBadge estado={peticion.estado} />
+                <Badge estado={peticion.estado} />
               </li>;
             })}
           </ul>}
