@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { getUserData } from "../../api/usuario"
-import { obtenerPeticionesAlumno, PeticionTramite } from "../../api/peticiones"
-import { obtenerProcedimientos, Procedimiento } from "../../api/procedimientos"
-import { Button, LoadingScreen, Badge } from "../../components"
+import { descargarConstancia, obtenerPeticionesAlumno, PeticionTramite } from "../../api/peticiones"
+import { Alert, Badge, Button, LoadingScreen } from "../../components"
 
 type Carga =
   | { estado: 'cargando' }
   | { estado: 'error' }
-  | { estado: 'listo'; peticiones: PeticionTramite[]; procedimientos: Procedimiento[] };
+  | { estado: 'listo'; peticiones: PeticionTramite[] };
 
 const formatoFecha = new Intl.DateTimeFormat('es-MX', {
   dateStyle: 'medium',
@@ -25,6 +23,48 @@ function formatearFecha(valor: string): string {
   return formatoFecha.format(fecha);
 }
 
+/** Acción sobre la constancia según el estado: descarga, espera o no disponible */
+function AccionConstancia({ peticion }: { peticion: PeticionTramite }): React.JSX.Element {
+  const [descargando, setDescargando] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const idAyuda = `constancia-ayuda-${peticion.id}`;
+
+  if (peticion.estado === 'Archivado') {
+    return <p className="text-sm text-gris-700 escritorio:max-w-60 escritorio:text-right">
+        El documento ya no está disponible: las constancias se archivan 6 meses después de emitirse.
+      </p>;
+  }
+
+  if (peticion.estado !== 'Finalizado') {
+    return <div className="flex flex-col gap-1 escritorio:items-end">
+        <Button disabled aria-describedby={idAyuda}>
+          Descargar PDF
+        </Button>
+        <p id={idAyuda} className="text-sm text-gris-700">Disponible cuando el trámite finalice.</p>
+      </div>;
+  }
+
+  const descargar = async () => {
+    setDescargando(true);
+    setError(null);
+
+    try {
+      await descargarConstancia(peticion.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo descargar la constancia');
+    } finally {
+      setDescargando(false);
+    }
+  };
+
+  return <div className="flex flex-col gap-2 escritorio:items-end">
+      <Button onClick={descargar} disabled={descargando}>
+        {descargando ? 'Descargando…' : 'Descargar PDF'}
+      </Button>
+      {error && <Alert type="error" className="escritorio:max-w-72">{error}</Alert>}
+    </div>;
+}
+
 export default function Historial(): React.JSX.Element {
   const [carga, setCarga] = useState<Carga>({ estado: 'cargando' });
   const navigate = useNavigate();
@@ -33,18 +73,8 @@ export default function Historial(): React.JSX.Element {
     setCarga({ estado: 'cargando' });
 
     try {
-      const respuestaUsuario = await getUserData();
-
-      if (!respuestaUsuario.ok) {
-        throw new Error('No se pudo obtener el usuario');
-      }
-
-      const [peticiones, procedimientos] = await Promise.all([
-        obtenerPeticionesAlumno(),
-        obtenerProcedimientos(),
-      ]);
-
-      setCarga({ estado: 'listo', peticiones, procedimientos });
+      const peticiones = await obtenerPeticionesAlumno();
+      setCarga({ estado: 'listo', peticiones });
     } catch {
       setCarga({ estado: 'error' });
     }
@@ -88,28 +118,25 @@ export default function Historial(): React.JSX.Element {
             </Button>
           </div>
         : <ul className="mt-6 divide-y divide-gris-200 rounded bg-blanco shadow-sm" aria-label="Tus trámites">
-            {carga.peticiones.map((peticion) => {
-              const procedimiento = carga.procedimientos.find(
-                (item) => item.id === peticion.procedimiento_id
-              );
-
-              return <li
+            {carga.peticiones.map((peticion) => <li
                 key={peticion.id}
-                className="flex flex-col gap-3 p-5 escritorio:flex-row escritorio:items-center escritorio:justify-between"
+                className="flex flex-col gap-4 p-5 escritorio:flex-row escritorio:items-center escritorio:justify-between"
               >
                 <div>
-                  <h2 className="text-base font-bold text-tinta">
-                    {procedimiento?.nombre ?? `Trámite #${peticion.procedimiento_id}`}
-                  </h2>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <h2 className="text-base font-bold text-tinta">
+                      {peticion.nombre_tramite ?? `Trámite #${peticion.procedimiento_id}`}
+                    </h2>
+                    <Badge estado={peticion.estado} />
+                  </div>
                   <p className="mt-1 text-sm text-gris-700">
                     Folio <span className="tabular-nums">#{peticion.id}</span>
                     {" · "}
                     Solicitado el {formatearFecha(peticion.fecha_solicitud)}
                   </p>
                 </div>
-                <Badge estado={peticion.estado} />
-              </li>;
-            })}
+                <AccionConstancia peticion={peticion} />
+              </li>)}
           </ul>}
     </main>;
 }
