@@ -4,7 +4,19 @@ import HistorialEstados from "./historialEstados";
 
 export default class PeticionTramite {
     public static async obtenerPeticionesPorAlumno(alumno_id: number): Promise<IPeticionTramite[]> {
-        const QUERY = `SELECT alumno_id, procedimiento_id, estado, fecha_solicitud FROM peticiones_tramite WHERE alumno_id = ?;`;
+        const QUERY = `
+            SELECT
+                pt.id,
+                pt.alumno_id,
+                pt.procedimiento_id,
+                pt.estado,
+                pt.fecha_solicitud,
+                p.nombre AS nombre_tramite
+            FROM peticiones_tramite pt
+            LEFT JOIN procedimientos p ON pt.procedimiento_id = p.id
+            WHERE pt.alumno_id = ?
+            ORDER BY pt.fecha_solicitud DESC, pt.id DESC;
+        `;
         const rows = await pool.query(QUERY, [alumno_id]);
         return (rows as IPeticionTramite[]) || [];
     }
