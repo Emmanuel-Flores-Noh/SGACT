@@ -17,6 +17,25 @@ export default class HistorialEstados {
         const rows = await pool.query(QUERY, [peticion_id]);
         return (rows as IHistorialEstado[]) || [];
     }
+    public static async obtenerHistorialPeticionesConDetalle() {
+        const QUERY = `
+            SELECT 
+                he.id,
+                he.peticion_id,
+                p.nombre AS procedimiento,
+                CONCAT(u.nombres, ' ', u.apellido_paterno, ' ', COALESCE(u.apellido_materno, '')) AS nombre_alumno,
+                u.matricula AS matricula_alumno,
+                he.estado_nuevo AS estado,
+                he.fecha
+            FROM historial_estados he
+            INNER JOIN peticiones_tramite pt ON he.peticion_id = pt.id
+            INNER JOIN procedimientos p ON pt.procedimiento_id = p.id
+            INNER JOIN usuarios u ON pt.alumno_id = u.id
+            ORDER BY he.fecha ASC;
+        `;
+        const rows = await pool.query(QUERY);
+        return rows || [];
+    }
     public static async obtenerHistorialPeticiones(): Promise<IHistorialEstado[]> {
         const QUERY = `SELECT * FROM historial_estados ORDER BY fecha ASC;`;
         const rows = await pool.query(QUERY);

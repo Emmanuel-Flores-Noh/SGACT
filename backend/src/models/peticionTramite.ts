@@ -70,10 +70,25 @@ export default class PeticionTramite {
         return (rows as IPeticionTramite[]) || [];
     }
 
-    public static async obtenerPeticionesEnTramite(): Promise<IPeticionTramite[]> {
-        const QUERY = `SELECT id, alumno_id, procedimiento_id, estado, fecha_solicitud FROM peticiones_tramite where estado = 'en tramite';`;
+    public static async obtenerPeticionesEnTramite() {
+        const QUERY = `
+            SELECT 
+                pt.id,
+                pt.alumno_id,
+                pt.procedimiento_id,
+                pt.estado,
+                pt.fecha_solicitud,
+                CONCAT(u.nombres, ' ', u.apellido_paterno, ' ', COALESCE(u.apellido_materno, '')) AS alumno_nombre,
+                u.matricula AS alumno_matricula,
+                pr.nombre AS procedimiento_nombre
+            FROM peticiones_tramite pt
+            INNER JOIN usuarios u ON pt.alumno_id = u.id
+            INNER JOIN procedimientos pr ON pt.procedimiento_id = pr.id
+            WHERE pt.estado = 'En trámite'
+            ORDER BY pt.fecha_solicitud ASC;
+        `;
         const rows = await pool.query(QUERY);
-        return (rows as IPeticionTramite[]) || [];
+        return rows || [];
     }
 
     public static async crearPeticionTramite(alumno_id: number, procedimiento_id: number) {

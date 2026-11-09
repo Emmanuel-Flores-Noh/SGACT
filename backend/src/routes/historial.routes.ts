@@ -3,7 +3,7 @@ import { obtenerHistorialPeticion, obtenerHistorialPorAlumno, obtenerHistorialPe
 
 const historialPeticiones = Router();
 
-historialPeticiones.get('/total', obtenerHistorialPeticiones);
+historialPeticiones.get('/', obtenerHistorialPeticiones);
 historialPeticiones.get('/alumno/:alumno_id?', obtenerHistorialPorAlumno);
 historialPeticiones.get('/:peticion_id', obtenerHistorialPeticion);
 historialPeticiones.post('/', registrarHistorialPeticion);
