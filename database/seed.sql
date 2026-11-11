@@ -87,3 +87,10 @@ INSERT INTO historial_estados (peticion_id, estado_anterior, estado_nuevo, fecha
     (15, 'En confirmación de pago', 'En confirmación de pago', '2026-10-23 01:00:00'),
     (16, 'En confirmación de pago', 'En trámite', '2026-10-20 02:00:00'),
     (16, 'En trámite', 'Finalizado', '2026-10-23 16:00:00');
+
+-- 7. Firma de ejemplo (archivo en backend/src/firmas/firma_seed.svg) para que los trámites
+--    "Finalizado" del seed puedan descargar su constancia, como si un revisor los hubiera firmado.
+INSERT INTO firmas_revisores (revisor_id, nombre_archivo, preconfigurada) VALUES
+    ((SELECT id FROM usuarios WHERE correo = 'prueba@prueba.com'), 'firma_seed.svg', false);
+
+UPDATE peticiones_tramite SET firma_id = LAST_INSERT_ID() WHERE estado = 'Finalizado';

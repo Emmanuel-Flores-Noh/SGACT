@@ -19,7 +19,7 @@
 
   --font-sgact: "Open Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 
-  /* Tokens de estado (medidos para contraste AA >= 4.5:1 sobre fondo claro) */
+  /* Tokens de estado: rol y contraste medido en .agents/skills/fundacion-identidad (§4, §5) */
   --ok-600: #1b6d32;
   --ok-200: #a3e0b2;
   --ok-050: #edf8f0;

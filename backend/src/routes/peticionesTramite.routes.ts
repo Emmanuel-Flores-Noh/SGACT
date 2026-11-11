@@ -7,8 +7,13 @@ import {
     actualizarEstadoPeticion
 } from '../controllers/peticion.controller';
 import { previsualizarDocumento } from '../controllers/preview.controller';
+import { descargarDocumento } from '../controllers/documento.controller';
+import verificarAuth from '../middlewares/verificarAuth';
 
 const peticionesTramite = Router();
+
+// Descarga de la constancia firmada
+peticionesTramite.get('/:id/documento', verificarAuth, descargarDocumento);
 
 // Previsualización de documentos
 peticionesTramite.post('/:id/preview', previsualizarDocumento);

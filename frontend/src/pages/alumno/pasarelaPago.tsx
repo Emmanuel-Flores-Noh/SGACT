@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { confirmarPago, ConfirmacionPago, ErrorPago } from "../../api/pasarela"
 import { useProcedimiento } from "../../hooks/useProcedimiento"
-import { Alert, Button, LoadingScreen, PasosPasarela, ResumenProcedimiento, StatusBadge } from "../../components"
+import { Alert, Button, LoadingScreen, PasosPasarela, ResumenProcedimiento, Badge } from "../../components"
 import {
   BANCOS,
   DATOS_PAGO_INICIALES,
@@ -206,7 +206,7 @@ export default function PasarelaPago(): React.JSX.Element {
           <section className="rounded bg-blanco p-6 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h1 className="text-xl font-bold text-azul-texto">Solicitud registrada</h1>
-              <StatusBadge estado={confirmacion.estado} />
+              <Badge estado={confirmacion.estado} />
             </div>
             <p className="mt-3 text-base text-tinta">
               Tu trámite fue registrado y el pago quedó pendiente de confirmación. Folio de la

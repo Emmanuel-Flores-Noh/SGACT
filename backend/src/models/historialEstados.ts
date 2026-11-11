@@ -22,6 +22,14 @@ export default class HistorialEstados {
         const rows = await pool.query(QUERY);
         return (rows as IHistorialEstado[]) || [];
     }
+    public static async obtenerFechaCambioEstado(peticion_id: number, estado_nuevo: string): Promise<Date | undefined> {
+        const QUERY = `SELECT fecha FROM historial_estados WHERE peticion_id = ? AND estado_nuevo = ? ORDER BY fecha DESC LIMIT 1;`;
+        const rows = await pool.query(QUERY, [peticion_id, estado_nuevo]);
+        if (rows.length === 0 || !rows[0].fecha) {
+            return undefined;
+        }
+        return new Date(rows[0].fecha);
+    }
     public static async actualizarHistorialPeticion(estado_nuevo: string, peticion_id: number) {
         const fecha_cambio = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const QUERY = `INSERT INTO historial_estados (peticion_id, estado_nuevo, fecha) VALUES (?, ?, ?);`;

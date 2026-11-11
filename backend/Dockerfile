@@ -40,6 +40,9 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/templates ./src/templates
 COPY --from=builder /app/src/templates ./dist/templates
 
+# Firmas incluidas en el repositorio (p. ej. la de ejemplo del seed); FIRMAS_DIR resuelve a dist/firmas
+COPY --from=builder /app/src/firmas ./dist/firmas
+
 EXPOSE 3000
 
 CMD ["node", "dist/index.js"]

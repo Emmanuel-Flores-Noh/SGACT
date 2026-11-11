@@ -1,5 +1,5 @@
 export * from './ui/Button';
-export * from './ui/StatusBadge';
+export * from './ui/Badge';
 export * from './ui/Alert';
 export * from './ui/Card';
 export * from './ui/LoadingScreen';

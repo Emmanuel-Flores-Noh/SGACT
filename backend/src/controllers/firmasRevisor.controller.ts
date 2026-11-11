@@ -3,9 +3,7 @@ import firma_revisor from "../models/firmaRevisor";
 import { StatusCodes } from "http-status-codes";
 import * as fs from "fs";
 import * as path from "path";
-
-const FIRMAS_PRECONFIGURADAS_DIR = path.resolve(__dirname, "../firmas_preconfiguradas");
-const FIRMAS_DIR = path.resolve(__dirname, "../firmas");
+import { FIRMAS_DIR, FIRMAS_PRECONFIGURADAS_DIR } from "../config/rutas";
 
 async function obtenerFirmasPreconfigurardasRevisor(req: Request, res: Response) {
     // @ts-ignore
