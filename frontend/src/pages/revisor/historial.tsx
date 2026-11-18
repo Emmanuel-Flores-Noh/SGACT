@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getUserData } from "../../api/usuario";
 import { obtenerHistorialPeticiones, HistorialPeticion } from "../../api/historial";
-import { Button, LoadingScreen, StatusBadge } from "../../components";
+import { Button, LoadingScreen, Badge } from "../../components";
 import { IoChevronDown, IoChevronUp, IoTimeOutline } from "react-icons/io5";
 
 type Carga =
@@ -170,7 +170,7 @@ export default function HistorialRevisor(): React.JSX.Element {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <StatusBadge estado={peticion.estado_actual} />
+                    <Badge estado={peticion.estado_actual} />
                     <button
                       type="button"
                       className="flex items-center gap-1 text-xs font-semibold text-azul-institucional hover:underline"
@@ -195,7 +195,7 @@ export default function HistorialRevisor(): React.JSX.Element {
                           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                             <div>
                               <span className="text-xs font-semibold text-tinta block">
-                                Estado: <StatusBadge estado={h.estado} />
+                                Estado: <Badge estado={h.estado} />
                               </span>
                             </div>
                             <span className="text-[11px] text-gris-500 font-mono">

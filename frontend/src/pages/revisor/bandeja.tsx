@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "../../api/usuario";
 import { obtenerPeticionesRevisor, PeticionDetalladaTramite } from "../../api/peticiones";
-import { Button, LoadingScreen, StatusBadge } from "../../components";
+import { Button, LoadingScreen, Badge } from "../../components";
 
 type Carga =
   | { estado: 'cargando' }
@@ -123,7 +123,7 @@ export default function BandejaRevisor(): React.JSX.Element {
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <StatusBadge estado={peticion.estado} />
+                  <Badge estado={peticion.estado} />
                 </div>
               </li>
             );
