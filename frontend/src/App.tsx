@@ -7,6 +7,8 @@ import PasarelaPago from './pages/alumno/pasarelaPago';
 import PasarelaResumen from './pages/alumno/pasarelaResumen';
 import Historial from './pages/alumno/historial';
 import Peticion from './pages/revisor/peticion';
+import HistorialRevisor from './pages/revisor/historial';
+import BandejaRevisor from './pages/revisor/bandeja';
 
 
 export default function App(): React.JSX.Element {
@@ -21,10 +23,10 @@ export default function App(): React.JSX.Element {
           <Route path="historial" element={<Historial />} />
         </Route>
         <Route path="revisor">
-          <Route path="bandeja">
-            <Route path=":peticionId" element={<Peticion />}/>
-          </ Route>
-          <Route path="historial" />
+          <Route path="bandeja" element={<BandejaRevisor />}/>
+          <Route path="bandeja/:peticionId" element={<Peticion />}/>
+          <Route path="historial" element={<HistorialRevisor />} />
+
         </Route>
       </Route>
 

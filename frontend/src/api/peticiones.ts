@@ -8,8 +8,27 @@ export interface PeticionTramite {
   fecha_solicitud: string;
   nombre_tramite?: string | null;
 }
+export interface PeticionDetalladaTramite {
+  id: number;
+  alumno_id: number;
+  alumno_nombre: string;
+  alumno_matricula: string;
+  procedimiento_nombre: string;
+  procedimiento_id: number;
+  estado: string;
+  fecha_solicitud: string;
+}
 
 export async function obtenerPeticionesAlumno(): Promise<PeticionTramite[]> {
+  const res = await GET('/api/peticiones/');
+
+  if (!res.ok) {
+    throw new Error(`Error ${res.status} al obtener las peticiones`);
+  }
+
+  return res.json();
+}
+export async function obtenerPeticionesRevisor(): Promise<PeticionTramite[]> {
   const res = await GET('/api/peticiones/');
 
   if (!res.ok) {

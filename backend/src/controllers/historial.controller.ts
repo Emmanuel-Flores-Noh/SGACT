@@ -78,7 +78,7 @@ async function obtenerHistorialPeticiones(req: Request, res: Response) {
     }
 
     try {
-        const historialGlobal = await HistorialEstados.obtenerHistorialPeticiones();
+        const historialGlobal = await HistorialEstados.obtenerHistorialPeticionesConDetalle();
         console.log("TOTAL DE HISTORIALES OBTENIDOS:", historialGlobal.length);
         return res.status(StatusCodes.OK).json(historialGlobal);
     } catch (error) {
